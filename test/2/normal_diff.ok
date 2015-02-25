@@ -1,0 +1,37 @@
+3,4c3
+< // Frobs foo heartily
+< int frobnitz(int foo)
+---
+> int fib(int n)
+6,7c5
+<     int i;
+<     for(i = 0; i < 10; i++)
+---
+>     if(n > 2)
+9,10c7
+<         printf("Your answer is: ");
+<         printf("%d\n", foo);
+---
+>         return fib(n-1) + fib(n-2);
+11a9
+>     return 1;
+14c12,13
+< int fact(int n)
+---
+> // Frobs foo heartily
+> int frobnitz(int foo)
+16c15,16
+<     if(n > 1)
+---
+>     int i;
+>     for(i = 0; i < 10; i++)
+18c18
+<         return fact(n-1) * n;
+---
+>         printf("%d\n", foo);
+20d19
+<     return 1;
+25c24
+<     frobnitz(fact(10));
+---
+>     frobnitz(fib(10));

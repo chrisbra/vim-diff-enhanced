@@ -1,0 +1,26 @@
+2a3,11
+> int fib(int n)
+> {
+>     if(n > 2)
+>     {
+>         return fib(n-1) + fib(n-2);
+>     }
+>     return 1;
+> }
+> 
+9d17
+<         printf("Your answer is: ");
+14,22d21
+< int fact(int n)
+< {
+<     if(n > 1)
+<     {
+<         return fact(n-1) * n;
+<     }
+<     return 1;
+< }
+< 
+25c24
+<     frobnitz(fact(10));
+---
+>     frobnitz(fib(10));
