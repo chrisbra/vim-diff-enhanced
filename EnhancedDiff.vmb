@@ -2,25 +2,29 @@
 UseVimball
 finish
 plugin/EnhancedDiff.vim	[[[1
-35
+39
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.1
+" Version: 0.2
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Thu, 15 Jan 2015 20:52:29 +0100
-" Script: http://www.vim.org/scripts/script.php?script_id=
+" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
 "          (see |copyright|) except use "EnhancedDiff.vim"
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: XXX 1 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
 "
 " Init: {{{1
 let s:cpo= &cpo
 if exists("g:loaded_enhanced_diff") || &cp
-  finish
+    finish
+elseif v:version < 704
+    echohl WarningMsg
+    echomsg "The EnhancedDiff Plugin needs at least a Vim version 7.4"
+    echohl Normal
 endif
 set cpo&vim
 let g:loaded_enhanced_diff = 1
@@ -32,27 +36,27 @@ endfu
 " public interface {{{1
 com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete CustomDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'
 com! PatienceDiff :CustomDiff patience
-com! -nargs=? DefaultDiff  :set diffexpr=
+com! -nargs=? DisableEnhancedDiff  :set diffexpr=
 
 " Restore: "{{{1
 let &cpo=s:cpo
 unlet s:cpo
 " vim: ts=4 sts=4 sw=4 et fdm=marker com+=l\:\"
 autoload/EnhancedDiff.vim	[[[1
-142
+144
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.1
+" Version: 0.2
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Thu, 15 Jan 2015 20:52:29 +0100
-" Script: http://www.vim.org/scripts/script.php?script_id=
+" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
 "          (see |copyright|) except use "EnhancedDiff.vim"
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: XXX 1 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
 function! s:DiffInit(...) "{{{2
     let s:diffcmd=exists("a:1") ? a:1 : 'diff'
     let s:diffargs=[]
@@ -66,11 +70,11 @@ function! s:DiffInit(...) "{{{2
 
     if !executable(split(s:diffcmd)[0])
         throw "no executable"
-    else
+    "else
         " Try to use git diff command, allows for more customizations
-        if split(s:diffcmd)[0] is# 'git' && !exists("s:git_version")
-            let s:git_version = substitute(split(system('git --version'))[-1], '\.', '', 'g') + 0
-        endif
+        "if split(s:diffcmd)[0] is# 'git' && !exists("s:git_version")
+        "    let s:git_version = substitute(split(system('git --version'))[-1], '\.', '', 'g') + 0
+        "endif
     endif
     let s:diffargs += split(default_args)
     if exists("{s:diffcmd}_default")
@@ -114,6 +118,8 @@ function! s:ConvertToNormalDiff(list) "{{{2
         elseif line =~? '^-'
             let last='old'
             call add(result, substitute(line, '^-', '< ', ''))
+	elseif line =~? '^ ' " skip context lines
+	    continue
         elseif line =~? hunk_start
             let list = matchlist(line, hunk_start)
             let old_start = list[1] + 0
@@ -183,4 +189,155 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
 endfunction
 doc/EnhancedDiff.txt	[[[1
-0
+151
+*EnhancedDiff.vim*   Enhanced Diff functions for Vim
+
+Author:  Christian Brabandt <cb@256bit.org>
+Version: 0.2 Wed, 25 Feb 2015 21:36:08 +0100
+Copyright: (c) 2015 by Christian Brabandt
+           The VIM LICENSE (see |copyright|) applies to EnhancedDiffPlugin.vim
+           except use EnhancedDiffPlugin instead of "Vim".
+           NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK.
+
+==============================================================================
+1. Contents                                                 *EnhancedDiffPlugin*
+==============================================================================
+
+        1.  Contents...................................: |EnhancedDiffPlugin|
+        2.  EnhancedDiff Manual........................: |EnhancedDiff-manual|
+        3.  EnhancedDiff Configuration.................: |EnhancedDiff-config|
+        4.  EnhancedDiff Feedback......................: |EnhancedDiff-feedback|
+        5.  EnhancedDiff History.......................: |EnhancedDiff-history|
+
+==============================================================================
+2. EnhancedDiffPlugin Manual                               *EnhancedDiff-manual*
+==============================================================================
+
+Functionality
+
+The EnhancedDiff plugin allows to use different diff algorithms. This can
+greatly improve the use of |vimdiff| by making a diff more readabile. To make
+use of different diff algorithms, this plugin makes use of the git command
+line tool to generate a unified diff and converts that diff to a normal "ed"
+style diff (|diff-diffexpr|) to make vimdiff use that diff.
+
+You could also use other diff tools if you like, as long as those generate a
+diff in the "unified" form.
+
+By default is disabled, which means, it uses the default diff algorithm (also
+known as myers algorithm).
+                                                        *EnhancedDiff-algorithms*
+git supports 4 different diff algorithms. Those are:
+
+    Algorithm       Description~
+    myers           Default diff algorithm
+    default         Alias for myers
+    minimal         Like myers, but tries harder to minimize the resulting diff
+    patience        Use the patience diff algorithm
+    histogram       Use the histogram diff algorithm (similar to patience but
+                    slightly faster)
+
+Note you need at least git version 1.8.2 or higher. Older versions do not
+support all those algorithms.
+
+                                                                *:CustomDiff*
+To specify a different diff algorithm use this command: >
+
+    :CustomDiff <algorithm>
+<
+Use any of the above alogrithm for creating the diffs. You can use <Tab> to
+complete the different algorithms.
+
+                                                                *:PatienceDiff*
+Use the :PatienceDiff to select the "patience" diff algorithm.
+
+The selected diff algorithm will be used for the next of the diff mode. If you
+are in diff mode (|vimdiff|) use |:diffupdate| to update the generated diff
+and the highlighting.
+
+                                                        *:DisableEnhancedDiff*
+Use the :DisableEnhancedDiff command to disable this plugin.
+
+==============================================================================
+3. EnhancedDiff configuration                              *EnhancedDiff-config*
+==============================================================================
+
+You can tweak the arguments for the diff generating tools using the following
+variables:
+
+g:enhanced_diff_default_git    
+---------------------------
+Default command line arguments for git
+(Default: "--no-index --no-color --no-ext-diff")
+
+g:enhanced_diff_default_diff
+----------------------------
+Default command line arguments for diff
+(Default: "--binary")
+
+g:enhanced_diff_default_args
+----------------------------
+Default arguments for any diff command
+(Default: "-U0")
+
+g:enhanced_diff_default_<command>
+---------------------------------
+Default command line argument for <command> (e.g. use "hg" to specify special
+arguments and you want to use hg to generate the diff)
+(Default: unset)
+
+                                                    *EnhancedDiff-custom-cmd*
+
+Suppose you want to use a different command line tool to generate the diff.
+
+For example, let's say you want to use mercurial to generate your diffs.
+First define the g:enhanced_diff_default_hg variable and set it to
+include all required arguments: >
+
+    :let g:enhanced_diff_default_hg = '-a'
+
+Then you define your custom command to make the next time diff mode is started
+make use of mercurial: >
+
+    :com! HgDiff :let &diffexpr='EnhancedDiff#Diff("hg diff")'
+
+The first argument of the EnhancedDiff#Diff specifies the command to use to
+generate the diff. The optional second argument specifies an optional
+parameter that will be used in addition to the g:enhanced_diff_default_hg
+variable. In addition to the arguments from the g:enhanced_diff_default_hg
+variable, also the arguments from the g:enhanced_diff_default_args will be
+used (e.g. by default the -U0 to prevent generating context lines).
+
+Note: You need to make sure to generate either a normal style diff or a unified
+style diff. A unified diff will be converted to a normal style diff so that
+Vim can make use of that diff for its diff mode.
+
+==============================================================================
+4. Plugin Feedback                                        *EnhancedDiff-feedback*
+==============================================================================
+
+Feedback is always welcome. If you like the plugin, please rate it at the
+vim-page:
+http://www.vim.org/scripts/script.php?script_id=5121
+
+You can also follow the development of the plugin at github:
+http://github.com/chrisbra/EnhancedDiff.vim
+
+Please don't hesitate to report any bugs to the maintainer, mentioned in the
+third line of this document.
+
+==============================================================================
+5. EnhancedDiff History                                   *EnhancedDiff-history*
+==============================================================================
+
+0.2: Feb 25, 2015 "{{{1
+
+- Updated documentation to link to the vim.org page
+
+0.1: Feb 25, 2015 "{{{1
+
+- Internal version
+
+==============================================================================
+Modeline: "{{{1
+vim:tw=78:ts=8:ft=help:et:fdm=marker:fdl=0:norl

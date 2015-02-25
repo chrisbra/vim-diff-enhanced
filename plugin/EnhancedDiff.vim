@@ -1,16 +1,16 @@
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.1
+" Version: 0.2
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Thu, 15 Jan 2015 20:52:29 +0100
-" Script: http://www.vim.org/scripts/script.php?script_id=
+" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
 "          (see |copyright|) except use "EnhancedDiff.vim"
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: XXX 1 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
 "
 " Init: {{{1
 let s:cpo= &cpo

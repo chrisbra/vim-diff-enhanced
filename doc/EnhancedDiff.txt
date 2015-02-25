@@ -1,7 +1,7 @@
 *EnhancedDiff.vim*   Enhanced Diff functions for Vim
 
 Author:  Christian Brabandt <cb@256bit.org>
-Version: 0.1 Thu, 15 Jan 2015 21:26:55 +0100
+Version: 0.2 Wed, 25 Feb 2015 21:36:08 +0100
 Copyright: (c) 2015 by Christian Brabandt
            The VIM LICENSE (see |copyright|) applies to EnhancedDiffPlugin.vim
            except use EnhancedDiffPlugin instead of "Vim".
@@ -126,7 +126,7 @@ Vim can make use of that diff for its diff mode.
 
 Feedback is always welcome. If you like the plugin, please rate it at the
 vim-page:
-http://www.vim.org/scripts/script.php?script_id=
+http://www.vim.org/scripts/script.php?script_id=5121
 
 You can also follow the development of the plugin at github:
 http://github.com/chrisbra/EnhancedDiff.vim
@@ -138,7 +138,11 @@ third line of this document.
 5. EnhancedDiff History                                   *EnhancedDiff-history*
 ==============================================================================
 
-0.1: (unreleased) "{{{1
+0.2: Feb 25, 2015 "{{{1
+
+- Updated documentation to link to the vim.org page
+
+0.1: Feb 25, 2015 "{{{1
 
 - Internal version
 
