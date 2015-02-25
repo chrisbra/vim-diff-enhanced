@@ -27,19 +27,19 @@ Once installed, take a look at the help at `:h EnhancedDiff`
 
 Here is a short overview of the functionality provided by the plugin:
 ####Ex commands:
-    `:PatienceDiff` - Use the Patience Diff algorithm for the next diff mode
-    `:CustomDiff <algorithm>`  - Use <algorithm> to generate the diff. Use any of
-			       [*]myers
-			       [*]default
-			       [*]histogram
-			       [*]patience
-			       After changing the algorithm, you need to run `:diffupdate`
-			       if you are in diff mode to regenerate the diff.
+`:PatienceDiff` - Use the Patience Diff algorithm for the next diff mode
+`:CustomDiff <algorithm>`  - Use <algorithm> to generate the diff. Use any of
+			    [*]myers
+			    [*]default
+			    [*]histogram
+			    [*]patience
+			    After changing the algorithm, you need to run `:diffupdate`
+			    if you are in diff mode to regenerate the diff.
 
 Note: Those 2 commands use internally git to generate the diffs.
 Make sure you have at least git version 1.8.2 installed.
 
-    `:DisableEnhancedDiff`    - Disable plugin (and use default Vim diff capabilities).
+`:DisableEnhancedDiff`    - Disable plugin (and use default Vim diff capabilities).
 
 ###License & Copyright
 
