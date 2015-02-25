@@ -18,9 +18,19 @@ and regenerating the diff using `:diffupdate`
 Note, that the Patience algorithm might not always provide better diffs. But using this plugin you can at least easily switch between different diffs.
 
 ###Installation
-Use the plugin manager of your choice. Or download the [stable][] version of the plugin, edit it with Vim (`vim EnhancedDiff-XXX.vmb`) and simply source it (`:so %`). Restart and take a look at the help (`:h EnhancedDiff.txt`)
+Use the plugin manager of your choice:
 
-[stable]: http://www.vim.org/scripts/script.php?script_id=
+* [Pathogen][pathogen]
+  * `git clone https://github.com/chrisbra/vim-diff-enhanced.git
+    ~/.vim/bundle/vim-enhanced-diff`
+* [NeoBundle][neobundle]
+  * `NeoBundle 'chrisbra/vim-diff-enhanced'`
+* [Vundle][vundle]
+  * `Plugin 'chrisbra/vim-diff-enhanced'`
+
+Alternatively download the [stable][] version of the plugin, edit it with Vim (`vim EnhancedDiff-XXX.vmb`) and simply source it (`:so %`). Restart and take a look at the help (`:h EnhancedDiff.txt`)
+
+[stable]: http://www.vim.org/scripts/script.php?script_id=5121
 
 ###Usage
 Once installed, take a look at the help at `:h EnhancedDiff`
@@ -31,10 +41,12 @@ Here is a short overview of the functionality provided by the plugin:
 
 `:CustomDiff <algorithm>`  - Use &lt;algorithm> to generate the diff.
 Use any of
-* myers
-* default
-* histogram
-* patience
+* myers		Default Diff algorithm used
+* default	Alias for myers algorithm
+* histogram     Fast version of patience algorithm
+* minimal	Default diff algorithm, trying harder to minimize the diff
+* patience	Patience diff algorithm.
+
 After changing the algorithm, you need to run `:diffupdate`
 if you are in diff mode to regenerate the diff.
 
