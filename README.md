@@ -27,6 +27,8 @@ Use the plugin manager of your choice:
   * `NeoBundle 'chrisbra/vim-diff-enhanced'`
 * [Vundle][vundle]
   * `Plugin 'chrisbra/vim-diff-enhanced'`
+* [Vim-Plug][vim-plug]
+  * `Plug 'chrisbra/vim-diff-enhanced'`
 
 Alternatively download the [stable][] version of the plugin, edit it with Vim (`vim EnhancedDiff-XXX.vmb`) and simply source it (`:so %`). Restart and take a look at the help (`:h EnhancedDiff.txt`)
 
@@ -60,3 +62,8 @@ Make sure you have at least git version 1.8.2 installed.
 © 2015 by Christian Brabandt. The Vim License applies. See `:h license`
 
 __NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK__
+
+[pathogen]: https://github.com/tpope/vim-pathogen
+[neobundle]: https://github.com/Shougo/neobundle.vim
+[vundle]: https://github.com/gmarik/vundle
+[vim-plug]: https://github.com/junegunn/vim-plug
