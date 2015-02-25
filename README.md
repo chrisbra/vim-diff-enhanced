@@ -21,8 +21,7 @@ Note, that the Patience algorithm might not always provide better diffs. But usi
 Use the plugin manager of your choice:
 
 * [Pathogen][pathogen]
-  * `git clone https://github.com/chrisbra/vim-diff-enhanced.git
-    ~/.vim/bundle/vim-enhanced-diff`
+  * `git clone https://github.com/chrisbra/vim-diff-enhanced.git ~/.vim/bundle/vim-enhanced-diff`
 * [NeoBundle][neobundle]
   * `NeoBundle 'chrisbra/vim-diff-enhanced'`
 * [Vundle][vundle]
