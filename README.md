@@ -28,7 +28,8 @@ Once installed, take a look at the help at `:h EnhancedDiff`
 Here is a short overview of the functionality provided by the plugin:
 ####Ex commands:
 `:PatienceDiff` - Use the Patience Diff algorithm for the next diff mode
-`:CustomDiff <algorithm>`  - Use <algorithm> to generate the diff. Use any of
+
+`:CustomDiff <algorithm>`  - Use &lt;algorithm> to generate the diff. Use any of
 			    [*]myers
 			    [*]default
 			    [*]histogram
