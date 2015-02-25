@@ -24,11 +24,11 @@ function! s:DiffInit(...) "{{{2
 
     if !executable(split(s:diffcmd)[0])
         throw "no executable"
-    else
+    "else
         " Try to use git diff command, allows for more customizations
-        if split(s:diffcmd)[0] is# 'git' && !exists("s:git_version")
-            let s:git_version = substitute(split(system('git --version'))[-1], '\.', '', 'g') + 0
-        endif
+        "if split(s:diffcmd)[0] is# 'git' && !exists("s:git_version")
+        "    let s:git_version = substitute(split(system('git --version'))[-1], '\.', '', 'g') + 0
+        "endif
     endif
     let s:diffargs += split(default_args)
     if exists("{s:diffcmd}_default")
@@ -72,6 +72,8 @@ function! s:ConvertToNormalDiff(list) "{{{2
         elseif line =~? '^-'
             let last='old'
             call add(result, substitute(line, '^-', '< ', ''))
+	elseif line =~? '^ ' " skip context lines
+	    continue
         elseif line =~? hunk_start
             let list = matchlist(line, hunk_start)
             let old_start = list[1] + 0
