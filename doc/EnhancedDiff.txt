@@ -138,6 +138,9 @@ third line of this document.
 5. EnhancedDiff History                                   *EnhancedDiff-history*
 ==============================================================================
 
+0.3: (unreleased) "{{{1
+- update diff, when in diffmode and |:CustomDiff| is used
+
 0.2: Feb 25, 2015 "{{{1
 
 - Updated documentation to link to the vim.org page

@@ -34,7 +34,7 @@ function! s:CustomDiffAlgComplete(A,L,P)
     return "myers\nminimal\ndefault\npatience\nhistogram"
 endfu
 " public interface {{{1
-com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete CustomDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'
+com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete CustomDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
 com! PatienceDiff :CustomDiff patience
 com! -nargs=? DisableEnhancedDiff  :set diffexpr=
 
