@@ -1,0 +1,13 @@
+post.pl
+vim_passfile
+.*.un~
+.*.sw*
+# ignore vimballs
+*.vba
+*.vmb
+# ignore test files
+# test/1/EnhancedDiff_default.txt
+test/*/EnhancedDiff_*.txt
+# ignore *.orig files
+*.orig
+doc/tags
