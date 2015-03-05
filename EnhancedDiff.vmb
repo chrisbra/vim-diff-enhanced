@@ -5,9 +5,9 @@ plugin/EnhancedDiff.vim	[[[1
 39
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.2
+" Version: 0.3
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Last Change: Thu, 05 Mar 2015 08:11:46 +0100
 " Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
@@ -15,7 +15,7 @@ plugin/EnhancedDiff.vim	[[[1
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 3 :AutoInstall: EnhancedDiff.vim
 "
 " Init: {{{1
 let s:cpo= &cpo
@@ -46,9 +46,9 @@ autoload/EnhancedDiff.vim	[[[1
 144
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.2
+" Version: 0.3
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Last Change: Thu, 05 Mar 2015 08:11:46 +0100
 " Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
@@ -56,7 +56,7 @@ autoload/EnhancedDiff.vim	[[[1
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 3 :AutoInstall: EnhancedDiff.vim
 function! s:DiffInit(...) "{{{2
     let s:diffcmd=exists("a:1") ? a:1 : 'diff'
     let s:diffargs=[]
@@ -83,7 +83,7 @@ function! s:DiffInit(...) "{{{2
 
     for [i,j] in items(special_args)
         if match(diffopt, i) > -1
-            call add(g:diffargs, j)
+            call add(s:diffargs, j)
         endif
     endfor
 
@@ -189,12 +189,12 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
 endfunction
 doc/EnhancedDiff.txt	[[[1
-151
+157
 *EnhancedDiff.vim*   Enhanced Diff functions for Vim
 
 Author:  Christian Brabandt <cb@256bit.org>
-Version: 0.2 Wed, 25 Feb 2015 21:36:08 +0100
-Copyright: (c) 2015 by Christian Brabandt
+Version: 0.3 Thu, 05 Mar 2015 08:11:46 +0100
+Copyright: (©) 2015 by Christian Brabandt
            The VIM LICENSE (see |copyright|) applies to EnhancedDiffPlugin.vim
            except use EnhancedDiffPlugin instead of "Vim".
            NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK.
@@ -216,7 +216,7 @@ Copyright: (c) 2015 by Christian Brabandt
 Functionality
 
 The EnhancedDiff plugin allows to use different diff algorithms. This can
-greatly improve the use of |vimdiff| by making a diff more readabile. To make
+greatly improve the use of |vimdiff| by making a diff more readable. To make
 use of different diff algorithms, this plugin makes use of the git command
 line tool to generate a unified diff and converts that diff to a normal "ed"
 style diff (|diff-diffexpr|) to make vimdiff use that diff.
@@ -245,15 +245,14 @@ To specify a different diff algorithm use this command: >
 
     :CustomDiff <algorithm>
 <
-Use any of the above alogrithm for creating the diffs. You can use <Tab> to
+Use any of the above algorithm for creating the diffs. You can use <Tab> to
 complete the different algorithms.
 
                                                                 *:PatienceDiff*
 Use the :PatienceDiff to select the "patience" diff algorithm.
 
 The selected diff algorithm will be used for the next of the diff mode. If you
-are in diff mode (|vimdiff|) use |:diffupdate| to update the generated diff
-and the highlighting.
+are in diff mode (|vimdiff|) the diff should be updated immediately.
 
                                                         *:DisableEnhancedDiff*
 Use the :DisableEnhancedDiff command to disable this plugin.
@@ -265,7 +264,7 @@ Use the :DisableEnhancedDiff command to disable this plugin.
 You can tweak the arguments for the diff generating tools using the following
 variables:
 
-g:enhanced_diff_default_git    
+g:enhanced_diff_default_git
 ---------------------------
 Default command line arguments for git
 (Default: "--no-index --no-color --no-ext-diff")
@@ -326,9 +325,16 @@ http://github.com/chrisbra/EnhancedDiff.vim
 Please don't hesitate to report any bugs to the maintainer, mentioned in the
 third line of this document.
 
-==============================================================================
-5. EnhancedDiff History                                   *EnhancedDiff-history*
-==============================================================================
+=============================================================================
+5. EnhancedDiff History                                 *EnhancedDiff-history*
+=============================================================================
+
+0.3: Mar 5th, 2014 "{{{1
+- update diff, when in diffmode and |:CustomDiff| is used
+- run test correctly, when installed via plugin manager (issue
+  https://github.com/chrisbra/vim-diff-enhanced/issues/1, reported by
+  advocateddrummer thanks!)
+- fix small typo (noticed by Gary Johnson, thanks!)
 
 0.2: Feb 25, 2015 "{{{1
 

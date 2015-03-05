@@ -1,8 +1,8 @@
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.2
+" Version: 0.3
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Last Change: Thu, 05 Mar 2015 08:11:46 +0100
 " Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
@@ -10,7 +10,7 @@
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 3 :AutoInstall: EnhancedDiff.vim
 function! s:DiffInit(...) "{{{2
     let s:diffcmd=exists("a:1") ? a:1 : 'diff'
     let s:diffargs=[]
