@@ -7,19 +7,19 @@ Copyright: (©) 2015 by Christian Brabandt
            except use EnhancedDiffPlugin instead of "Vim".
            NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK.
 
-==============================================================================
-1. Contents                                                 *EnhancedDiffPlugin*
-==============================================================================
+============================================================================
+1. Contents                                               *EnhancedDiffPlugin*
+============================================================================
 
-        1.  Contents...................................: |EnhancedDiffPlugin|
-        2.  EnhancedDiff Manual........................: |EnhancedDiff-manual|
-        3.  EnhancedDiff Configuration.................: |EnhancedDiff-config|
-        4.  EnhancedDiff Feedback......................: |EnhancedDiff-feedback|
-        5.  EnhancedDiff History.......................: |EnhancedDiff-history|
+        1.  Contents.................................: |EnhancedDiffPlugin|
+        2.  EnhancedDiff Manual......................: |EnhancedDiff-manual|
+        3.  EnhancedDiff Configuration...............: |EnhancedDiff-config|
+        4.  EnhancedDiff Feedback....................: |EnhancedDiff-feedback|
+        5.  EnhancedDiff History.....................: |EnhancedDiff-history|
 
-==============================================================================
-2. EnhancedDiffPlugin Manual                               *EnhancedDiff-manual*
-==============================================================================
+============================================================================
+2. EnhancedDiffPlugin Manual                             *EnhancedDiff-manual*
+============================================================================
 
 Functionality
 
@@ -34,13 +34,14 @@ diff in the "unified" form.
 
 By default is disabled, which means, it uses the default diff algorithm (also
 known as myers algorithm).
-                                                        *EnhancedDiff-algorithms*
+                                                    *EnhancedDiff-algorithms*
 git supports 4 different diff algorithms. Those are:
 
     Algorithm       Description~
     myers           Default diff algorithm
     default         Alias for myers
-    minimal         Like myers, but tries harder to minimize the resulting diff
+    minimal         Like myers, but tries harder to minimize the resulting
+                    diff
     patience        Use the patience diff algorithm
     histogram       Use the histogram diff algorithm (similar to patience but
                     slightly faster)
@@ -56,18 +57,19 @@ To specify a different diff algorithm use this command: >
 Use any of the above algorithm for creating the diffs. You can use <Tab> to
 complete the different algorithms.
 
-                                                                *:PatienceDiff*
+                                                               *:PatienceDiff*
 Use the :PatienceDiff to select the "patience" diff algorithm.
 
-The selected diff algorithm will be used for the next of the diff mode. If you
-are in diff mode (|vimdiff|) the diff should be updated immediately.
+The selected diff algorithm will from then on be used for all the diffs that
+will be generated in the future. If you are in diff mode (|vimdiff|) the diff
+should be updated immediately.
 
                                                         *:DisableEnhancedDiff*
 Use the :DisableEnhancedDiff command to disable this plugin.
 
-==============================================================================
-3. EnhancedDiff configuration                              *EnhancedDiff-config*
-==============================================================================
+============================================================================
+3. EnhancedDiff configuration                            *EnhancedDiff-config*
+============================================================================
 
 You can tweak the arguments for the diff generating tools using the following
 variables:
@@ -115,13 +117,13 @@ variable. In addition to the arguments from the g:enhanced_diff_default_hg
 variable, also the arguments from the g:enhanced_diff_default_args will be
 used (e.g. by default the -U0 to prevent generating context lines).
 
-Note: You need to make sure to generate either a normal style diff or a unified
-style diff. A unified diff will be converted to a normal style diff so that
-Vim can make use of that diff for its diff mode.
+Note: You need to make sure to generate either a normal style diff or a
+unified style diff. A unified diff will be converted to a normal style diff so
+that Vim can make use of that diff for its diff mode.
 
-==============================================================================
-4. Plugin Feedback                                        *EnhancedDiff-feedback*
-==============================================================================
+============================================================================
+4. Plugin Feedback                                    *EnhancedDiff-feedback*
+============================================================================
 
 Feedback is always welcome. If you like the plugin, please rate it at the
 vim-page:
@@ -133,9 +135,12 @@ http://github.com/chrisbra/EnhancedDiff.vim
 Please don't hesitate to report any bugs to the maintainer, mentioned in the
 third line of this document.
 
-=============================================================================
+============================================================================
 5. EnhancedDiff History                                 *EnhancedDiff-history*
-=============================================================================
+============================================================================
+
+0.4 (unreleased) "{{{1
+- documentation update
 
 0.3: Mar 5th, 2014 "{{{1
 - update diff, when in diffmode and |:CustomDiff| is used

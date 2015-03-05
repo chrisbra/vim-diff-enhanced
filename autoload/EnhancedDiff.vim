@@ -130,6 +130,7 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
     call writefile(difflist, v:fname_out)
     if get(g:, 'enhanced_diff_debug', 0)
+	" This is needed for the tests.
         call writefile(difflist, 'EnhancedDiff_normal.txt')
         " Also write default diff
         let opt = "-a --binary "

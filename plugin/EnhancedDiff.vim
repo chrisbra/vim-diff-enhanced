@@ -31,7 +31,7 @@ endfu
 " public interface {{{1
 com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete CustomDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
 com! PatienceDiff :CustomDiff patience
-com! -nargs=? DisableEnhancedDiff  :set diffexpr=
+com! DisableEnhancedDiff  :set diffexpr=
 
 " Restore: "{{{1
 let &cpo=s:cpo
