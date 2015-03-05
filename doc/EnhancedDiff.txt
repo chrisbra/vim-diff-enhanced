@@ -133,15 +133,16 @@ http://github.com/chrisbra/EnhancedDiff.vim
 Please don't hesitate to report any bugs to the maintainer, mentioned in the
 third line of this document.
 
-==============================================================================
-5. EnhancedDiff History                                   *EnhancedDiff-history*
-==============================================================================
+=============================================================================
+5. EnhancedDiff History                                 *EnhancedDiff-history*
+=============================================================================
 
-0.3: (unreleased) "{{{1
+0.3: Mar 5th, 2014 "{{{1
 - update diff, when in diffmode and |:CustomDiff| is used
 - run test correctly, when installed via plugin manager (issue
   https://github.com/chrisbra/vim-diff-enhanced/issues/1, reported by
   advocateddrummer thanks!)
+- fix small typo (noticed by Gary Johnson, thanks!)
 
 0.2: Feb 25, 2015 "{{{1
 

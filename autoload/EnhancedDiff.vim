@@ -37,7 +37,7 @@ function! s:DiffInit(...) "{{{2
 
     for [i,j] in items(special_args)
         if match(diffopt, i) > -1
-            call add(g:diffargs, j)
+            call add(s:diffargs, j)
         endif
     endfor
 
