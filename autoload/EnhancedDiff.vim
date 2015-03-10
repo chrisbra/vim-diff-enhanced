@@ -114,7 +114,12 @@ function! EnhancedDiff#Diff(...) "{{{2
         call s:Warn(cmd. ' not found in path, aborting!')
         return
     endtry
-    let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+    " systemlist was introduced with 7.4.248
+    if exists("*systemlist")
+	let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+    else
+	let difflist=split(system(s.diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+    endif
     if v:shell_error < 0 || v:shell_error > 1
         " An error occured
         set diffexpr=

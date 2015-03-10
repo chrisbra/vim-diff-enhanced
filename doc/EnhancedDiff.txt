@@ -141,6 +141,9 @@ third line of this document.
 
 0.4 (unreleased) "{{{1
 - documentation update
+- if |systemlist()| is not available, use |system()| function (issue
+  https://github.com/chrisbra/vim-diff-enhanced/issues/2 reported by agude,
+  thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
 - update diff, when in diffmode and |:CustomDiff| is used
