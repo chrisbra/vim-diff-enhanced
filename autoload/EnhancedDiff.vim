@@ -42,8 +42,8 @@ function! s:DiffInit(...) "{{{2
     endfor
 
     " Add file arguments, should be last!
-    call add(s:diffargs, v:fname_in)
-    call add(s:diffargs, v:fname_new)
+    call add(s:diffargs, s:ModifyPathAndCD(v:fname_in))
+    call add(s:diffargs, s:ModifyPathAndCD(v:fname_new))
     " v:fname_out will be written later
 endfu
 function! s:Warn(msg) "{{{2
@@ -102,6 +102,17 @@ function! s:ConvertToNormalDiff(list) "{{{2
     endfor
     return result
 endfunction
+function! s:ModifyPathAndCD(file) "{{{2
+    if has("win32") || has("win64")
+	" avoid a problem with Windows and cygwins path (issue #3)
+	let path = (a:file is? '-' ? '-' : fnamemodify(a:file, ':p:h'))
+	if getcwd() isnot# path
+	    exe 'sil :cd' fnameescape(path)
+	endif
+	return fnameescape(fnamemodify(a:file, ':p:.'))
+    endif
+    return fnameescape(a:file)
+endfunction
 function! EnhancedDiff#Diff(...) "{{{2
     let cmd=(exists("a:1") ? a:1 : '')
     let arg=(exists("a:2") ? a:2 : '')
@@ -114,12 +125,13 @@ function! EnhancedDiff#Diff(...) "{{{2
         call s:Warn(cmd. ' not found in path, aborting!')
         return
     endtry
-    " systemlist was introduced with 7.4.248
+    " systemlist() was introduced with 7.4.248
     if exists("*systemlist")
 	let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
     else
 	let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
     endif
+    call s:ModifyPathAndCD('-')
     if v:shell_error < 0 || v:shell_error > 1
         " An error occured
         set diffexpr=
