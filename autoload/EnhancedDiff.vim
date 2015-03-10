@@ -36,7 +36,7 @@ function! s:DiffInit(...) "{{{2
     endif
 
     for [i,j] in items(special_args)
-        if match(diffopt, i) > -1
+        if match(diffopt, '\m\C'.i) > -1
             call add(s:diffargs, j)
         endif
     endfor
@@ -51,7 +51,18 @@ function! s:Warn(msg) "{{{2
     unsilent echomsg  "EnhancedDiff: ". a:msg
     echohl Normal
 endfu
-function! s:ConvertToNormalDiff(list) "{{{2
+function! s:ModifyPathAndCD(file) "{{{2
+    if has("win32") || has("win64")
+	" avoid a problem with Windows and cygwins path (issue #3)
+	let path = (a:file is? '-' ? '-' : fnamemodify(a:file, ':p:h'))
+	if getcwd() isnot# path
+	    exe 'sil :cd' fnameescape(path)
+	endif
+	return fnameescape(fnamemodify(a:file, ':p:.'))
+    endif
+    return fnameescape(a:file)
+endfunction
+function! EnhancedDiff#ConvertToNormalDiff(list) "{{{2
     " Convert unified diff into normal diff
     let result=[]
     let start=1
@@ -102,17 +113,6 @@ function! s:ConvertToNormalDiff(list) "{{{2
     endfor
     return result
 endfunction
-function! s:ModifyPathAndCD(file) "{{{2
-    if has("win32") || has("win64")
-	" avoid a problem with Windows and cygwins path (issue #3)
-	let path = (a:file is? '-' ? '-' : fnamemodify(a:file, ':p:h'))
-	if getcwd() isnot# path
-	    exe 'sil :cd' fnameescape(path)
-	endif
-	return fnameescape(fnamemodify(a:file, ':p:.'))
-    endif
-    return fnameescape(a:file)
-endfunction
 function! EnhancedDiff#Diff(...) "{{{2
     let cmd=(exists("a:1") ? a:1 : '')
     let arg=(exists("a:2") ? a:2 : '')
@@ -141,9 +141,9 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
     " if unified diff...
     " do some processing here
-    if !empty(difflist) && difflist[0] !~# '^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
+    if !empty(difflist) && difflist[0] !~# '\m\C^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
         " transform into normal diff
-        let difflist=s:ConvertToNormalDiff(difflist)
+        let difflist=EnhancedDiff#ConvertToNormalDiff(difflist)
     endif
     call writefile(difflist, v:fname_out)
     if get(g:, 'enhanced_diff_debug', 0)
