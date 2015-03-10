@@ -118,7 +118,7 @@ function! EnhancedDiff#Diff(...) "{{{2
     if exists("*systemlist")
 	let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
     else
-	let difflist=split(system(s.diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+	let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
     endif
     if v:shell_error < 0 || v:shell_error > 1
         " An error occured
