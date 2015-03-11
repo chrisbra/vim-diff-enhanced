@@ -54,7 +54,12 @@ endfu
 function! s:ModifyPathAndCD(file) "{{{2
     if has("win32") || has("win64")
 	" avoid a problem with Windows and cygwins path (issue #3)
-	let path = (a:file is? '-' ? '-' : fnamemodify(a:file, ':p:h'))
+	if a:file is# '-'
+	    " cd back into the previous directory
+	    cd -
+	    return
+	endif
+	let path = fnamemodify(a:file, ':p:h')
 	if getcwd() isnot# path
 	    exe 'sil :cd' fnameescape(path)
 	endif
