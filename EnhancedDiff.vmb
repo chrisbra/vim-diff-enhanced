@@ -36,14 +36,14 @@ endfu
 " public interface {{{1
 com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete CustomDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
 com! PatienceDiff :CustomDiff patience
-com! -nargs=? DisableEnhancedDiff  :set diffexpr=
+com! DisableEnhancedDiff  :set diffexpr=
 
 " Restore: "{{{1
 let &cpo=s:cpo
 unlet s:cpo
 " vim: ts=4 sts=4 sw=4 et fdm=marker com+=l\:\"
 autoload/EnhancedDiff.vim	[[[1
-144
+167
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
 " Version: 0.3
@@ -82,14 +82,14 @@ function! s:DiffInit(...) "{{{2
     endif
 
     for [i,j] in items(special_args)
-        if match(diffopt, i) > -1
+        if match(diffopt, '\m\C'.i) > -1
             call add(s:diffargs, j)
         endif
     endfor
 
     " Add file arguments, should be last!
-    call add(s:diffargs, v:fname_in)
-    call add(s:diffargs, v:fname_new)
+    call add(s:diffargs, s:ModifyPathAndCD(v:fname_in))
+    call add(s:diffargs, s:ModifyPathAndCD(v:fname_new))
     " v:fname_out will be written later
 endfu
 function! s:Warn(msg) "{{{2
@@ -97,7 +97,23 @@ function! s:Warn(msg) "{{{2
     unsilent echomsg  "EnhancedDiff: ". a:msg
     echohl Normal
 endfu
-function! s:ConvertToNormalDiff(list) "{{{2
+function! s:ModifyPathAndCD(file) "{{{2
+    if has("win32") || has("win64")
+	" avoid a problem with Windows and cygwins path (issue #3)
+	if a:file is# '-'
+	    " cd back into the previous directory
+	    cd -
+	    return
+	endif
+	let path = fnamemodify(a:file, ':p:h')
+	if getcwd() isnot# path
+	    exe 'sil :cd' fnameescape(path)
+	endif
+	return fnameescape(fnamemodify(a:file, ':p:.'))
+    endif
+    return fnameescape(a:file)
+endfunction
+function! EnhancedDiff#ConvertToNormalDiff(list) "{{{2
     " Convert unified diff into normal diff
     let result=[]
     let start=1
@@ -160,7 +176,13 @@ function! EnhancedDiff#Diff(...) "{{{2
         call s:Warn(cmd. ' not found in path, aborting!')
         return
     endtry
-    let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+    " systemlist() was introduced with 7.4.248
+    if exists("*systemlist")
+	let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+    else
+	let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+    endif
+    call s:ModifyPathAndCD('-')
     if v:shell_error < 0 || v:shell_error > 1
         " An error occured
         set diffexpr=
@@ -170,12 +192,13 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
     " if unified diff...
     " do some processing here
-    if !empty(difflist) && difflist[0] !~# '^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
+    if !empty(difflist) && difflist[0] !~# '\m\C^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
         " transform into normal diff
-        let difflist=s:ConvertToNormalDiff(difflist)
+        let difflist=EnhancedDiff#ConvertToNormalDiff(difflist)
     endif
     call writefile(difflist, v:fname_out)
     if get(g:, 'enhanced_diff_debug', 0)
+	" This is needed for the tests.
         call writefile(difflist, 'EnhancedDiff_normal.txt')
         " Also write default diff
         let opt = "-a --binary "
@@ -189,7 +212,7 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
 endfunction
 doc/EnhancedDiff.txt	[[[1
-157
+187
 *EnhancedDiff.vim*   Enhanced Diff functions for Vim
 
 Author:  Christian Brabandt <cb@256bit.org>
@@ -199,19 +222,19 @@ Copyright: (©) 2015 by Christian Brabandt
            except use EnhancedDiffPlugin instead of "Vim".
            NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK.
 
-==============================================================================
-1. Contents                                                 *EnhancedDiffPlugin*
-==============================================================================
+============================================================================
+1. Contents                                               *EnhancedDiffPlugin*
+============================================================================
 
-        1.  Contents...................................: |EnhancedDiffPlugin|
-        2.  EnhancedDiff Manual........................: |EnhancedDiff-manual|
-        3.  EnhancedDiff Configuration.................: |EnhancedDiff-config|
-        4.  EnhancedDiff Feedback......................: |EnhancedDiff-feedback|
-        5.  EnhancedDiff History.......................: |EnhancedDiff-history|
+        1.  Contents.................................: |EnhancedDiffPlugin|
+        2.  EnhancedDiff Manual......................: |EnhancedDiff-manual|
+        3.  EnhancedDiff Configuration...............: |EnhancedDiff-config|
+        4.  EnhancedDiff Feedback....................: |EnhancedDiff-feedback|
+        5.  EnhancedDiff History.....................: |EnhancedDiff-history|
 
-==============================================================================
-2. EnhancedDiffPlugin Manual                               *EnhancedDiff-manual*
-==============================================================================
+============================================================================
+2. EnhancedDiffPlugin Manual                             *EnhancedDiff-manual*
+============================================================================
 
 Functionality
 
@@ -226,13 +249,14 @@ diff in the "unified" form.
 
 By default is disabled, which means, it uses the default diff algorithm (also
 known as myers algorithm).
-                                                        *EnhancedDiff-algorithms*
+                                                    *EnhancedDiff-algorithms*
 git supports 4 different diff algorithms. Those are:
 
     Algorithm       Description~
     myers           Default diff algorithm
     default         Alias for myers
-    minimal         Like myers, but tries harder to minimize the resulting diff
+    minimal         Like myers, but tries harder to minimize the resulting
+                    diff
     patience        Use the patience diff algorithm
     histogram       Use the histogram diff algorithm (similar to patience but
                     slightly faster)
@@ -248,18 +272,19 @@ To specify a different diff algorithm use this command: >
 Use any of the above algorithm for creating the diffs. You can use <Tab> to
 complete the different algorithms.
 
-                                                                *:PatienceDiff*
+                                                               *:PatienceDiff*
 Use the :PatienceDiff to select the "patience" diff algorithm.
 
-The selected diff algorithm will be used for the next of the diff mode. If you
-are in diff mode (|vimdiff|) the diff should be updated immediately.
+The selected diff algorithm will from then on be used for all the diffs that
+will be generated in the future. If you are in diff mode (|vimdiff|) the diff
+should be updated immediately.
 
                                                         *:DisableEnhancedDiff*
 Use the :DisableEnhancedDiff command to disable this plugin.
 
-==============================================================================
-3. EnhancedDiff configuration                              *EnhancedDiff-config*
-==============================================================================
+============================================================================
+3. EnhancedDiff configuration                            *EnhancedDiff-config*
+============================================================================
 
 You can tweak the arguments for the diff generating tools using the following
 variables:
@@ -307,13 +332,32 @@ variable. In addition to the arguments from the g:enhanced_diff_default_hg
 variable, also the arguments from the g:enhanced_diff_default_args will be
 used (e.g. by default the -U0 to prevent generating context lines).
 
-Note: You need to make sure to generate either a normal style diff or a unified
-style diff. A unified diff will be converted to a normal style diff so that
-Vim can make use of that diff for its diff mode.
+Note: You need to make sure to generate either a normal style diff or a
+unified style diff. A unified diff will be converted to a normal style diff so
+that Vim can make use of that diff for its diff mode.
 
-==============================================================================
-4. Plugin Feedback                                        *EnhancedDiff-feedback*
-==============================================================================
+                                                    *EnhancedDiff-convert-diffs*
+The EnhancedDiff plugin defines a public function
+(EnhancedDiff#ConvertToNormalDiff(arg) that can be used by any plugin to
+convert a diff in unified form to a diff that can be read by Vim.
+
+arg is a |List| containing the diff as returned by git diff. Use it
+like this: >
+
+    let mydiff   = systemlist('git diff ...')
+    let difflist = EnhancedDiff#ConvertToNormalDiff(mydiff)
+<
+If your Vim doesn't have the systemlist() function, you can manully split the
+list like this: >
+
+    let mydiff   = split(system('git diff ...'), "\n")
+    let difflist = EnhancedDiff#ConvertToNormalDiff(mydiff)
+
+Note: If you want to use the converted diff and feed it back to Vim for its
+diff mode, you need to write the list back to the file |v:fname_out|
+============================================================================
+4. Plugin Feedback                                    *EnhancedDiff-feedback*
+============================================================================
 
 Feedback is always welcome. If you like the plugin, please rate it at the
 vim-page:
@@ -325,9 +369,18 @@ http://github.com/chrisbra/EnhancedDiff.vim
 Please don't hesitate to report any bugs to the maintainer, mentioned in the
 third line of this document.
 
-=============================================================================
+============================================================================
 5. EnhancedDiff History                                 *EnhancedDiff-history*
-=============================================================================
+============================================================================
+
+0.4 (unreleased) "{{{1
+- documentation update
+- if |systemlist()| is not available, use |system()| function (issue
+  https://github.com/chrisbra/vim-diff-enhanced/issues/2 reported by agude,
+  thanks!)
+- cd into temporary directory before doing the diff (issue 
+  https://github.com/chrisbra/vim-diff-enhanced/issues/3 reported by idbrii,
+  thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
 - update diff, when in diffmode and |:CustomDiff| is used
