@@ -121,6 +121,25 @@ Note: You need to make sure to generate either a normal style diff or a
 unified style diff. A unified diff will be converted to a normal style diff so
 that Vim can make use of that diff for its diff mode.
 
+                                                    *EnhancedDiff-convert-diffs*
+The EnhancedDiff plugin defines a public function
+(EnhancedDiff#ConvertToNormalDiff(arg) that can be used by any plugin to
+convert a diff in unified form to a diff that can be read by Vim.
+
+arg is a |List| containing the diff as returned by git diff. Use it
+like this: >
+
+    let mydiff   = systemlist('git diff ...')
+    let difflist = EnhancedDiff#ConvertToNormalDiff(mydiff)
+<
+If your Vim doesn't have the systemlist() function, you can manully split the
+list like this: >
+
+    let mydiff   = split(system('git diff ...'), "\n")
+    let difflist = EnhancedDiff#ConvertToNormalDiff(mydiff)
+
+Note: If you want to use the converted diff and feed it back to Vim for its
+diff mode, you need to write the list back to the file |v:fname_out|
 ============================================================================
 4. Plugin Feedback                                    *EnhancedDiff-feedback*
 ============================================================================
@@ -143,6 +162,9 @@ third line of this document.
 - documentation update
 - if |systemlist()| is not available, use |system()| function (issue
   https://github.com/chrisbra/vim-diff-enhanced/issues/2 reported by agude,
+  thanks!)
+- cd into temporary directory before doing the diff (issue 
+  https://github.com/chrisbra/vim-diff-enhanced/issues/3 reported by idbrii,
   thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
