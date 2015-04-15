@@ -40,7 +40,7 @@ Here is a short overview of the functionality provided by the plugin:
 ####Ex commands:
 `:PatienceDiff` - Use the Patience Diff algorithm for the next diff mode
 
-`:CustomDiff <algorithm>`  - Use &lt;algorithm> to generate the diff.
+`:EnhancedDiff <algorithm>`  - Use &lt;algorithm> to generate the diff.
 Use any of
 * myers		Default Diff algorithm used
 * default	Alias for myers algorithm
@@ -54,7 +54,7 @@ if you are in diff mode to regenerate the diff.
 Note: Those 2 commands use internally git to generate the diffs.
 Make sure you have at least git version 1.8.2 installed.
 
-`:DisableEnhancedDiff`    - Disable plugin (and use default Vim diff capabilities).
+`:EnhancedDiffDisable`    - Disable plugin (and use default Vim diff capabilities).
 
 ###License & Copyright
 

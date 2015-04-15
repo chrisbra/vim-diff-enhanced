@@ -49,10 +49,10 @@ git supports 4 different diff algorithms. Those are:
 Note you need at least git version 1.8.2 or higher. Older versions do not
 support all those algorithms.
 
-                                                                *:CustomDiff*
+                                                                *:EnhancedDiff*
 To specify a different diff algorithm use this command: >
 
-    :CustomDiff <algorithm>
+    :EnhancedDiff <algorithm>
 <
 Use any of the above algorithm for creating the diffs. You can use <Tab> to
 complete the different algorithms.
@@ -64,8 +64,8 @@ The selected diff algorithm will from then on be used for all the diffs that
 will be generated in the future. If you are in diff mode (|vimdiff|) the diff
 should be updated immediately.
 
-                                                        *:DisableEnhancedDiff*
-Use the :DisableEnhancedDiff command to disable this plugin.
+                                                        *:EnhancedDiffDisable*
+Use the :EnhancedDiffDisable command to disable this plugin.
 
 ============================================================================
 3. EnhancedDiff configuration                            *EnhancedDiff-config*
@@ -165,6 +165,9 @@ third line of this document.
   thanks!)
 - cd into temporary directory before doing the diff (issue 
   https://github.com/chrisbra/vim-diff-enhanced/issues/3 reported by idbrii,
+  thanks!)
+- rename public commands to :EnhancedDiff prefix (issue
+  https://github.com/chrisbra/vim-diff-enhanced/isseus/4 reported by justinmk,
   thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
