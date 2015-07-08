@@ -65,6 +65,15 @@ are in diff mode (|vimdiff|) the diff should be updated immediately.
                                                         *:DisableEnhancedDiff*
 Use the :DisableEnhancedDiff command to disable this plugin.
 
+                                                          *EnhancedDiff-vimrc*
+If you want e.g. the patience diff algorithm to be the default when using the
+|vimdiff| command, you need to set the 'diffexpr' option manually like this
+in your |.vimrc| >
+
+  :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+<
+Since internally, EnhancedDiff does simply set up the 'diffexpr' option.
+
 ==============================================================================
 3. EnhancedDiff configuration                              *EnhancedDiff-config*
 ==============================================================================
