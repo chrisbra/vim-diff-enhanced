@@ -1,8 +1,8 @@
 " EnhancedDiff.vim - Enhanced Diff functions for Vim
 " -------------------------------------------------------------
-" Version: 0.2
+" Version: 0.3
 " Maintainer:  Christian Brabandt <cb@256bit.org>
-" Last Change: Wed, 25 Feb 2015 21:36:08 +0100
+" Last Change: Thu, 05 Mar 2015 08:11:46 +0100
 " Script: http://www.vim.org/scripts/script.php?script_id=5121
 " Copyright:   (c) 2009-2015 by Christian Brabandt
 "          The VIM LICENSE applies to EnhancedDifff.vim
@@ -10,7 +10,7 @@
 "          instead of "Vim".
 "          No warranty, express or implied.
 "    *** ***   Use At-Your-Own-Risk!   *** ***
-" GetLatestVimScripts: 5121 2 :AutoInstall: EnhancedDiff.vim
+" GetLatestVimScripts: 5121 3 :AutoInstall: EnhancedDiff.vim
 function! s:DiffInit(...) "{{{2
     let s:diffcmd=exists("a:1") ? a:1 : 'diff'
     let s:diffargs=[]
@@ -36,14 +36,14 @@ function! s:DiffInit(...) "{{{2
     endif
 
     for [i,j] in items(special_args)
-        if match(diffopt, i) > -1
-            call add(g:diffargs, j)
+        if match(diffopt, '\m\C'.i) > -1
+            call add(s:diffargs, j)
         endif
     endfor
 
     " Add file arguments, should be last!
-    call add(s:diffargs, v:fname_in)
-    call add(s:diffargs, v:fname_new)
+    call add(s:diffargs, s:ModifyPathAndCD(v:fname_in))
+    call add(s:diffargs, s:ModifyPathAndCD(v:fname_new))
     " v:fname_out will be written later
 endfu
 function! s:Warn(msg) "{{{2
@@ -51,7 +51,23 @@ function! s:Warn(msg) "{{{2
     unsilent echomsg  "EnhancedDiff: ". a:msg
     echohl Normal
 endfu
-function! s:ConvertToNormalDiff(list) "{{{2
+function! s:ModifyPathAndCD(file) "{{{2
+    if has("win32") || has("win64")
+	" avoid a problem with Windows and cygwins path (issue #3)
+	if a:file is# '-'
+	    " cd back into the previous directory
+	    cd -
+	    return
+	endif
+	let path = fnamemodify(a:file, ':p:h')
+	if getcwd() isnot# path
+	    exe 'sil :cd' fnameescape(path)
+	endif
+	return fnameescape(fnamemodify(a:file, ':p:.'))
+    endif
+    return fnameescape(a:file)
+endfunction
+function! EnhancedDiff#ConvertToNormalDiff(list) "{{{2
     " Convert unified diff into normal diff
     let result=[]
     let start=1
@@ -114,7 +130,13 @@ function! EnhancedDiff#Diff(...) "{{{2
         call s:Warn(cmd. ' not found in path, aborting!')
         return
     endtry
-    let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+    " systemlist() was introduced with 7.4.248
+    if exists("*systemlist")
+	let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+    else
+	let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+    endif
+    call s:ModifyPathAndCD('-')
     if v:shell_error < 0 || v:shell_error > 1
         " An error occured
         set diffexpr=
@@ -124,12 +146,13 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
     " if unified diff...
     " do some processing here
-    if !empty(difflist) && difflist[0] !~# '^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
+    if !empty(difflist) && difflist[0] !~# '\m\C^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
         " transform into normal diff
-        let difflist=s:ConvertToNormalDiff(difflist)
+        let difflist=EnhancedDiff#ConvertToNormalDiff(difflist)
     endif
     call writefile(difflist, v:fname_out)
     if get(g:, 'enhanced_diff_debug', 0)
+	" This is needed for the tests.
         call writefile(difflist, 'EnhancedDiff_normal.txt')
         " Also write default diff
         let opt = "-a --binary "
