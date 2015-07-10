@@ -76,6 +76,21 @@ in your |.vimrc| >
 <
 Since internally, EnhancedDiff does simply set up the 'diffexpr' option.
 
+An alternative to this method is the following:
+
+Create a file after/plugin/patiencediff.vim in your default runtimepath (e.g.
+~/.vim/ directory on Linux, ~/vimfiles on Windows, creating missing directories,
+if they do not exist yet) and put into it the following: >
+
+  " This can't go in .vimrc, because :PatienceDiff isn't available
+  if !exists(":PatienceDiff")
+  " This block is optional, but will protect you from errors if you
+  " uninstall vim-diff-enhanced or share your config across machines
+    finish
+  endif
+  PatienceDiff
+<
+
 ==============================================================================
 3. EnhancedDiff configuration                              *EnhancedDiff-config*
 ==============================================================================
