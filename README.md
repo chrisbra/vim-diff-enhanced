@@ -53,6 +53,16 @@ diffs. Make sure you have at least git version 1.8.2 installed.
 
 `:EnhancedDiffDisable`    - Disable plugin (and use default Vim diff capabilities).
 
+###FAQ
+
+####How can I enable the patience diff algorithm when starting as vimdiff / git difftool / ... ?
+In that case, add this snippet to your .vimrc:
+```viml
+" started In Diff-Mode set diffexpr (plugin not loaded yet)
+if &diff
+    let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+endif
+```
 ###License & Copyright
 
 © 2015 by Christian Brabandt. The Vim License applies. See `:h license`
