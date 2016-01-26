@@ -212,7 +212,7 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
 endfunction
 doc/EnhancedDiff.txt	[[[1
-187
+214
 *EnhancedDiff.vim*   Enhanced Diff functions for Vim
 
 Author:  Christian Brabandt <cb@256bit.org>
@@ -264,10 +264,10 @@ git supports 4 different diff algorithms. Those are:
 Note you need at least git version 1.8.2 or higher. Older versions do not
 support all those algorithms.
 
-                                                                *:CustomDiff*
+                                                                *:EnhancedDiff*
 To specify a different diff algorithm use this command: >
 
-    :CustomDiff <algorithm>
+    :EnhancedDiff <algorithm>
 <
 Use any of the above algorithm for creating the diffs. You can use <Tab> to
 complete the different algorithms.
@@ -279,12 +279,36 @@ The selected diff algorithm will from then on be used for all the diffs that
 will be generated in the future. If you are in diff mode (|vimdiff|) the diff
 should be updated immediately.
 
-                                                        *:DisableEnhancedDiff*
-Use the :DisableEnhancedDiff command to disable this plugin.
+                                                        *:EnhancedDiffDisable*
+Use the :EnhancedDiffDisable command to disable this plugin.
 
-============================================================================
-3. EnhancedDiff configuration                            *EnhancedDiff-config*
-============================================================================
+                                                          *EnhancedDiff-vimrc*
+If you want e.g. the patience diff algorithm to be the default when using the
+|vimdiff| command, you need to set the 'diffexpr' option manually like this
+in your |.vimrc| >
+
+  :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+<
+Since internally, EnhancedDiff does simply set up the 'diffexpr' option.
+
+An alternative to this method is the following:
+
+Create a file after/plugin/patiencediff.vim in your default runtimepath (e.g.
+~/.vim/ directory on Linux, ~/vimfiles on Windows, creating missing directories,
+if they do not exist yet) and put into it the following: >
+
+  " This can't go in .vimrc, because :PatienceDiff isn't available
+  if !exists(":PatienceDiff")
+  " This block is optional, but will protect you from errors if you
+  " uninstall vim-diff-enhanced or share your config across machines
+    finish
+  endif
+  PatienceDiff
+<
+
+==============================================================================
+3. EnhancedDiff configuration                              *EnhancedDiff-config*
+==============================================================================
 
 You can tweak the arguments for the diff generating tools using the following
 variables:
@@ -380,6 +404,9 @@ third line of this document.
   thanks!)
 - cd into temporary directory before doing the diff (issue 
   https://github.com/chrisbra/vim-diff-enhanced/issues/3 reported by idbrii,
+  thanks!)
+- rename public commands to :EnhancedDiff prefix (issue
+  https://github.com/chrisbra/vim-diff-enhanced/isseus/4 reported by justinmk,
   thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
