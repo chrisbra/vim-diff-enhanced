@@ -22,6 +22,7 @@ Use the plugin manager of your choice:
 
 * [Pathogen][pathogen]
   * `git clone https://github.com/chrisbra/vim-diff-enhanced.git ~/.vim/bundle/vim-enhanced-diff`
+  * `:Helptags` (only needed once after the installation to install the documentation)
 * [NeoBundle][neobundle]
   * `NeoBundle 'chrisbra/vim-diff-enhanced'`
 * [Vundle][vundle]
