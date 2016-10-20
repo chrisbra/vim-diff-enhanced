@@ -41,6 +41,26 @@ function! s:DiffInit(...) "{{{2
   call add(s:diffargs, s:ModifyPathAndCD(v:fname_new))
   " v:fname_out will be written later
 endfu
+function! s:ModifyDiffFiles() "{{{2
+  " replace provided pattern by 'XXX' so it will be ignored when diffing
+  for expr in get(g:, 'enhanced_diff_ignore_pat', [])
+    if !exists("cnt1")
+      let cnt1 = readfile(v:fname_in)
+      let cnt2 = readfile(v:fname_new)
+    endif
+    " do not modify the test diff, that always comes
+    " before the actual diff is evaluated
+    if cnt1 ==# ['line1'] && cnt2 ==# ['line2']
+      return
+    endif
+    call map(cnt1, "substitute(v:val, expr, 'XXX', 'g')")
+    call map(cnt2, "substitute(v:val, expr, 'XXX', 'g')")
+  endfor
+  if exists("cnt1")
+    call writefile(cnt1, v:fname_in)
+    call writefile(cnt2, v:fname_new)
+  endif
+endfu
 function! s:Warn(msg) "{{{2
   echohl WarningMsg
   unsilent echomsg  "EnhancedDiff: ". a:msg
@@ -125,12 +145,8 @@ function! EnhancedDiff#Diff(...) "{{{2
     call s:Warn(cmd. ' not found in path, aborting!')
     return
   endtry
-  " systemlist() was introduced with 7.4.248
-  if exists("*systemlist")
-    let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
-  else
-    let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
-  endif
+  call s:ModifyDiffFiles()
+  let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
   call s:ModifyPathAndCD('-')
   if v:shell_error < 0 || v:shell_error > 1
     " An error occured

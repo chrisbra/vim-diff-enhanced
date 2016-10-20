@@ -67,6 +67,17 @@ should be updated immediately.
                                                         *:EnhancedDiffDisable*
 Use the :EnhancedDiffDisable command to disable this plugin.
 
+                                                        *:EnhancedDiffIgnorePat*
+
+Use the command :EnhancedDiffIgnorePat to add patterns to the ignore list: >
+
+   :EnhancedDiffIgnorePat \%.*<10c
+<
+This will add the pattern "\%.*<10c" (all text before column 10) to the
+ignorelist. Internally this works by replacing the pattern by a common string
+so that the diff command does not see a difference. Most probably won't work
+with multi-line patterns.
+
                                                           *EnhancedDiff-vimrc*
 If you want e.g. the patience diff algorithm to be the default when using the
 |vimdiff| command, you need to set the 'diffexpr' option manually like this

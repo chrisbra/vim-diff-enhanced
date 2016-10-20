@@ -16,9 +16,9 @@
 let s:cpo= &cpo
 if exists("g:loaded_enhanced_diff") || &cp
     finish
-elseif v:version < 704
+elseif v:version < 800
     echohl WarningMsg
-    echomsg "The EnhancedDiff Plugin needs at least a Vim version 7.4"
+    echomsg "The EnhancedDiff Plugin needs at least a Vim version 8.0"
     echohl Normal
 endif
 set cpo&vim
@@ -32,6 +32,7 @@ endfu
 com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
 com! PatienceDiff :EnhancedDiff patience
 com! EnhancedDiffDisable  :set diffexpr=
+com! -nargs=1 EnhancedDiffIgnorePat :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>]
 
 " Restore: "{{{1
 let &cpo=s:cpo
