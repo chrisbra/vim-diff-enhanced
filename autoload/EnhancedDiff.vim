@@ -12,157 +12,152 @@
 "    *** ***   Use At-Your-Own-Risk!   *** ***
 " GetLatestVimScripts: 5121 3 :AutoInstall: EnhancedDiff.vim
 function! s:DiffInit(...) "{{{2
-    let s:diffcmd=exists("a:1") ? a:1 : 'diff'
-    let s:diffargs=[]
-    let diffopt=split(&diffopt, ',')
-    let special_args = {'icase': '-i', 'iwhite': '-b'}
-    let git_default = get(g:, 'enhanced_diff_default_git',
-        \ '--no-index --no-color --no-ext-diff')
-    let diff_default = get(g:, 'enhanced_diff_default_diff', '--binary')
-    let default_args = (exists("a:2") ? a:2 : ''). ' '.
-        \ get(g:, 'enhanced_diff_default_args', '-U0') 
+  let s:diffcmd=exists("a:1") ? a:1 : 'diff'
+  let s:diffargs=[]
+  let diffopt=split(&diffopt, ',')
+  let special_args = {'icase': '-i', 'iwhite': '-b'}
+  let git_default = get(g:, 'enhanced_diff_default_git',
+    \ '--no-index --no-color --no-ext-diff')
+  let diff_default = get(g:, 'enhanced_diff_default_diff', '--binary')
+  let default_args = (exists("a:2") ? a:2 : ''). ' '.
+    \ get(g:, 'enhanced_diff_default_args', '-U0') 
 
-    if !executable(split(s:diffcmd)[0])
-        throw "no executable"
-    "else
-        " Try to use git diff command, allows for more customizations
-        "if split(s:diffcmd)[0] is# 'git' && !exists("s:git_version")
-        "    let s:git_version = substitute(split(system('git --version'))[-1], '\.', '', 'g') + 0
-        "endif
+  if !executable(split(s:diffcmd)[0])
+    throw "no executable"
+  endif
+  let s:diffargs += split(default_args)
+  if exists("{s:diffcmd}_default")
+    let s:diffargs += split({s:diffcmd}_default)
+  endif
+
+  for [i,j] in items(special_args)
+    if match(diffopt, '\m\C'.i) > -1
+      call add(s:diffargs, j)
     endif
-    let s:diffargs += split(default_args)
-    if exists("{s:diffcmd}_default")
-        let s:diffargs += split({s:diffcmd}_default)
-    endif
+  endfor
 
-    for [i,j] in items(special_args)
-        if match(diffopt, '\m\C'.i) > -1
-            call add(s:diffargs, j)
-        endif
-    endfor
-
-    " Add file arguments, should be last!
-    call add(s:diffargs, s:ModifyPathAndCD(v:fname_in))
-    call add(s:diffargs, s:ModifyPathAndCD(v:fname_new))
-    " v:fname_out will be written later
+  " Add file arguments, should be last!
+  call add(s:diffargs, s:ModifyPathAndCD(v:fname_in))
+  call add(s:diffargs, s:ModifyPathAndCD(v:fname_new))
+  " v:fname_out will be written later
 endfu
 function! s:Warn(msg) "{{{2
-    echohl WarningMsg
-    unsilent echomsg  "EnhancedDiff: ". a:msg
-    echohl Normal
+  echohl WarningMsg
+  unsilent echomsg  "EnhancedDiff: ". a:msg
+  echohl Normal
 endfu
 function! s:ModifyPathAndCD(file) "{{{2
-    if has("win32") || has("win64")
-        " avoid a problem with Windows and cygwins path (issue #3)
-        if a:file is# '-'
-            " cd back into the previous directory
-            cd -
-            return
-        endif
-        let path = fnamemodify(a:file, ':p:h')
-        if getcwd() isnot# path
-            exe 'sil :cd' fnameescape(path)
-        endif
-        return fnameescape(fnamemodify(a:file, ':p:.'))
+  if has("win32") || has("win64")
+    " avoid a problem with Windows and cygwins path (issue #3)
+    if a:file is# '-'
+      " cd back into the previous directory
+      cd -
+      return
     endif
-    return fnameescape(a:file)
+    let path = fnamemodify(a:file, ':p:h')
+    if getcwd() isnot# path
+      exe 'sil :cd' fnameescape(path)
+    endif
+    return fnameescape(fnamemodify(a:file, ':p:.'))
+  endif
+  return fnameescape(a:file)
 endfunction
 function! EnhancedDiff#ConvertToNormalDiff(list) "{{{2
-    " Convert unified diff into normal diff
-    let result=[]
-    let start=1
-    let hunk_start = '^@@ -\(\d\+\)\%(,\(\d\+\)\)\? +\(\d\+\)\%(,\(\d\+\)\)\? @@.*$'
-    let last = ''
-    for line in a:list
-        if start && line !~# '^@@'
-            continue
-        else
-            let start=0
-        endif
-        if line =~? '^+'
-            if last is# 'old'
-                call add(result, '---')
-                let last='new'
-            endif
-            call add(result, substitute(line, '^+', '> ', ''))
-        elseif line =~? '^-'
-            let last='old'
-            call add(result, substitute(line, '^-', '< ', ''))
-        elseif line =~? '^ ' " skip context lines
-            continue
-        elseif line =~? hunk_start
-            let list = matchlist(line, hunk_start)
-            let old_start = list[1] + 0
-            let old_len   = list[2] + 0
-            let new_start = list[3] + 0
-            let new_len   = list[4] + 0
-            let action    = 'c'
-            let before_end= ''
-            let after_end = ''
-            let last = ''
+  " Convert unified diff into normal diff
+  let result=[]
+  let start=1
+  let hunk_start = '^@@ -\(\d\+\)\%(,\(\d\+\)\)\? +\(\d\+\)\%(,\(\d\+\)\)\? @@.*$'
+  let last = ''
+  for line in a:list
+    if start && line !~# '^@@'
+      continue
+    else
+      let start=0
+    endif
+    if line =~? '^+'
+      if last is# 'old'
+        call add(result, '---')
+        let last='new'
+      endif
+      call add(result, substitute(line, '^+', '> ', ''))
+    elseif line =~? '^-'
+      let last='old'
+      call add(result, substitute(line, '^-', '< ', ''))
+    elseif line =~? '^ ' " skip context lines
+      continue
+    elseif line =~? hunk_start
+      let list = matchlist(line, hunk_start)
+      let old_start = list[1] + 0
+      let old_len   = list[2] + 0
+      let new_start = list[3] + 0
+      let new_len   = list[4] + 0
+      let action    = 'c'
+      let before_end= ''
+      let after_end = ''
+      let last = ''
 
-            if list[2] is# '0'
-                let action = 'a'
-            elseif list[4] is# '0'
-                let action = 'd'
-            endif
+      if list[2] is# '0'
+        let action = 'a'
+      elseif list[4] is# '0'
+        let action = 'd'
+      endif
 
-            if (old_len)
-                let before_end = printf(',%s', old_start + old_len - 1)
-            endif
-            if (new_len)
-                let after_end  = printf(',%s', new_start + new_len - 1)
-            endif
-            call add(result, old_start.before_end.action.new_start.after_end)
-        endif
-    endfor
-    return result
+      if (old_len)
+        let before_end = printf(',%s', old_start + old_len - 1)
+      endif
+      if (new_len)
+        let after_end  = printf(',%s', new_start + new_len - 1)
+      endif
+      call add(result, old_start.before_end.action.new_start.after_end)
+    endif
+  endfor
+  return result
 endfunction
 function! EnhancedDiff#Diff(...) "{{{2
-    let cmd=(exists("a:1") ? a:1 : '')
-    let arg=(exists("a:2") ? a:2 : '')
-    try
-        call s:DiffInit(cmd, arg)
-    catch
-        " no-op
-        " error occured, reset diffexpr
-        set diffexpr=
-        call s:Warn(cmd. ' not found in path, aborting!')
-        return
-    endtry
-    " systemlist() was introduced with 7.4.248
-    if exists("*systemlist")
-        let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
-    else
-        let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+  let cmd=(exists("a:1") ? a:1 : '')
+  let arg=(exists("a:2") ? a:2 : '')
+  try
+    call s:DiffInit(cmd, arg)
+  catch
+    " no-op
+    " error occured, reset diffexpr
+    set diffexpr=
+    call s:Warn(cmd. ' not found in path, aborting!')
+    return
+  endtry
+  " systemlist() was introduced with 7.4.248
+  if exists("*systemlist")
+    let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+  else
+    let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+  endif
+  call s:ModifyPathAndCD('-')
+  if v:shell_error < 0 || v:shell_error > 1
+    " An error occured
+    set diffexpr=
+    call s:Warn(cmd. ' Error executing "'. s:diffcmd. ' '.join(s:diffargs, ' ').'"')
+    call s:Warn(difflist[0])
+    return
+  endif
+  " if unified diff...
+  " do some processing here
+  if !empty(difflist) && difflist[0] !~# '\m\C^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
+    " transform into normal diff
+    let difflist=EnhancedDiff#ConvertToNormalDiff(difflist)
+  endif
+  call writefile(difflist, v:fname_out)
+  if get(g:, 'enhanced_diff_debug', 0)
+    " This is needed for the tests.
+    call writefile(difflist, 'EnhancedDiff_normal.txt')
+    " Also write default diff
+    let opt = "-a --binary "
+    if &diffopt =~ "icase"
+      let opt .= "-i "
     endif
-    call s:ModifyPathAndCD('-')
-    if v:shell_error < 0 || v:shell_error > 1
-        " An error occured
-        set diffexpr=
-        call s:Warn(cmd. ' Error executing "'. s:diffcmd. ' '.join(s:diffargs, ' ').'"')
-        call s:Warn(difflist[0])
-        return
+    if &diffopt =~ "iwhite"
+      let opt .=  "-b "
     endif
-    " if unified diff...
-    " do some processing here
-    if !empty(difflist) && difflist[0] !~# '\m\C^\%(\d\+\)\%(,\d\+\)\?[acd]\%(\d\+\)\%(,\d\+\)\?'
-        " transform into normal diff
-        let difflist=EnhancedDiff#ConvertToNormalDiff(difflist)
-    endif
-    call writefile(difflist, v:fname_out)
-    if get(g:, 'enhanced_diff_debug', 0)
-        " This is needed for the tests.
-        call writefile(difflist, 'EnhancedDiff_normal.txt')
-        " Also write default diff
-        let opt = "-a --binary "
-        if &diffopt =~ "icase"
-            let opt .= "-i "
-        endif
-        if &diffopt =~ "iwhite"
-            let opt .=  "-b "
-        endif
-        silent execute "!diff " . opt . v:fname_in . " " . v:fname_new .  " > EnhancedDiff_default.txt"
-    endif
+    silent execute "!diff " . opt . v:fname_in . " " . v:fname_new .  " > EnhancedDiff_default.txt"
+  endif
 endfunction
 " vim: ts=2 sts=-1 sw=0 et fdm=marker com+=l\:\"
