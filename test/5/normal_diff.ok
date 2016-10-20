@@ -1,0 +1,6 @@
+3,4c3,4
+< XXX   foobar
+< XXX   foobar
+---
+> XXX   foo
+> XXX   foo

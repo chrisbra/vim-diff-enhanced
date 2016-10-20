@@ -1,0 +1,18 @@
+2,9c2,9
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+< xxxxxxxxx   foobar
+---
+> yyyyyyyyy   foobar
+> yyyyyyyyy   foo
+> yyyyyyyyy   foo
+> yyyyyyyyy   foobar
+> yyyyyyyyy   foobar
+> yyyyyyyyy   foobar
+> yyyyyyyyy   foobar
+> yyyyyyyyy   foobar
