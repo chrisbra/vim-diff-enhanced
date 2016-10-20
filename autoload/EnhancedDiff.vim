@@ -53,17 +53,17 @@ function! s:Warn(msg) "{{{2
 endfu
 function! s:ModifyPathAndCD(file) "{{{2
     if has("win32") || has("win64")
-	" avoid a problem with Windows and cygwins path (issue #3)
-	if a:file is# '-'
-	    " cd back into the previous directory
-	    cd -
-	    return
-	endif
-	let path = fnamemodify(a:file, ':p:h')
-	if getcwd() isnot# path
-	    exe 'sil :cd' fnameescape(path)
-	endif
-	return fnameescape(fnamemodify(a:file, ':p:.'))
+        " avoid a problem with Windows and cygwins path (issue #3)
+        if a:file is# '-'
+            " cd back into the previous directory
+            cd -
+            return
+        endif
+        let path = fnamemodify(a:file, ':p:h')
+        if getcwd() isnot# path
+            exe 'sil :cd' fnameescape(path)
+        endif
+        return fnameescape(fnamemodify(a:file, ':p:.'))
     endif
     return fnameescape(a:file)
 endfunction
@@ -88,8 +88,8 @@ function! EnhancedDiff#ConvertToNormalDiff(list) "{{{2
         elseif line =~? '^-'
             let last='old'
             call add(result, substitute(line, '^-', '< ', ''))
-	elseif line =~? '^ ' " skip context lines
-	    continue
+        elseif line =~? '^ ' " skip context lines
+            continue
         elseif line =~? hunk_start
             let list = matchlist(line, hunk_start)
             let old_start = list[1] + 0
@@ -132,9 +132,9 @@ function! EnhancedDiff#Diff(...) "{{{2
     endtry
     " systemlist() was introduced with 7.4.248
     if exists("*systemlist")
-	let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+        let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
     else
-	let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
+        let difflist=split(system(s:diffcmd. ' '. join(s:diffargs, ' ')), "\n")
     endif
     call s:ModifyPathAndCD('-')
     if v:shell_error < 0 || v:shell_error > 1
@@ -152,7 +152,7 @@ function! EnhancedDiff#Diff(...) "{{{2
     endif
     call writefile(difflist, v:fname_out)
     if get(g:, 'enhanced_diff_debug', 0)
-	" This is needed for the tests.
+        " This is needed for the tests.
         call writefile(difflist, 'EnhancedDiff_normal.txt')
         " Also write default diff
         let opt = "-a --binary "
@@ -165,3 +165,4 @@ function! EnhancedDiff#Diff(...) "{{{2
         silent execute "!diff " . opt . v:fname_in . " " . v:fname_new .  " > EnhancedDiff_default.txt"
     endif
 endfunction
+" vim: ts=2 sts=-1 sw=0 et fdm=marker com+=l\:\"
