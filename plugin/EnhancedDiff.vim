@@ -32,7 +32,7 @@ endfu
 com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
 com! PatienceDiff :EnhancedDiff patience
 com! EnhancedDiffDisable  :set diffexpr=
-com! -nargs=1 EnhancedDiffIgnorePat :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>]
+com! -nargs=1 -bang EnhancedDiffIgnorePat if <q-bang> | :let g:enhanced_diff_ignore_pat = [<q-args>] | else | :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>] |endif
 
 " Restore: "{{{1
 let &cpo=s:cpo
