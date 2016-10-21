@@ -26,14 +26,25 @@ set cpo&vim
 let g:loaded_enhanced_diff = 1
 
 " Functions {{{1
-function! s:CustomDiffAlgComplete(A,L,P)
+function! s:CustomDiffAlgComplete(A,L,P) "{{{2
     return "myers\nminimal\ndefault\npatience\nhistogram"
+endfu
+function! s:CustomIgnorePat(bang, ...) "{{{2
+    if a:bang || !exists("g:enhanced_diff_ignore_pat")
+        let g:enhanced_diff_ignore_pat=[]
+    endif
+    if a:0
+        let pat = a:1
+        let replace = a:0 == 2 ? a:2 : 'XXX'
+        call add(g:enhanced_diff_ignore_pat, [pat, replace])
+    endif
 endfu
 " public interface {{{1
 com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
 com! PatienceDiff :EnhancedDiff patience
 com! EnhancedDiffDisable  :set diffexpr=
-com! -nargs=1 -bang EnhancedDiffIgnorePat if <q-bang> | :let g:enhanced_diff_ignore_pat = [<q-args>] | else | :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>] |endif
+"com! -nargs=1 -bang EnhancedDiffIgnorePat if <q-bang> | :let g:enhanced_diff_ignore_pat = [<q-args>] | else | :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>] |endif
+com! -nargs=* -bang EnhancedDiffIgnorePat call s:CustomIgnorePat(<q-bang>, <f-args>)
 
 " Restore: "{{{1
 let &cpo=s:cpo

@@ -53,8 +53,8 @@ function! s:ModifyDiffFiles() "{{{2
     if cnt1 ==# ['line1'] && cnt2 ==# ['line2']
       return
     endif
-    call map(cnt1, "substitute(v:val, expr, 'XXX', 'g')")
-    call map(cnt2, "substitute(v:val, expr, 'XXX', 'g')")
+    call map(cnt1, "substitute(v:val, expr[0], expr[1], 'g')")
+    call map(cnt2, "substitute(v:val, expr[0], expr[1], 'g')")
   endfor
   if exists("cnt1")
     call writefile(cnt1, v:fname_in)

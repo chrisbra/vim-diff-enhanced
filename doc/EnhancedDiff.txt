@@ -71,13 +71,17 @@ Use the :EnhancedDiffDisable command to disable this plugin.
 
 Use the command :EnhancedDiffIgnorePat to add patterns to the ignore list: >
 
-   :EnhancedDiffIgnorePat \%.*<10c
+   :EnhancedDiffIgnorePat \%.*<10c [<replace>]
 <
 This will add the pattern "\%.*<10c" (all text before column 10) to the
 ignorelist. Internally this works by replacing the pattern by a common string
 so that the diff command does not see a difference. Most probably won't work
-with multi-line patterns. Use the "!" attribute to remove all existing
-patterns and set it to the given pattern only.
+with multi-line patterns.
+
+Use the "!" attribute to remove all existing patterns and set it to the given
+pattern only.
+
+If <replace> is given, will use that as replacement part for the pattern
 
 Note: This only works, if EnhancedDiff has been enabled, e.g. after: >
 
