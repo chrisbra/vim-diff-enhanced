@@ -79,6 +79,10 @@ so that the diff command does not see a difference. Most probably won't work
 with multi-line patterns. Use the "!" attribute to remove all existing
 patterns and set it to the given pattern only.
 
+Note: This only works, if EnhancedDiff has been enabled, e.g. after: >
+
+    :EnhancedDiff default
+<
                                                           *EnhancedDiff-vimrc*
 If you want e.g. the patience diff algorithm to be the default when using the
 |vimdiff| command, you need to set the 'diffexpr' option manually like this
