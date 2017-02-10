@@ -25,6 +25,9 @@ function! s:DiffInit(...) "{{{2
   if !executable(split(s:diffcmd)[0])
     throw "no executable"
   endif
+
+  let s:diffargs += split(git_default)
+  let s:diffargs += split(diff_default)
   let s:diffargs += split(default_args)
   if exists("{s:diffcmd}_default")
     let s:diffargs += split({s:diffcmd}_default)
