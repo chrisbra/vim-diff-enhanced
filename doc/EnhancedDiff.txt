@@ -123,11 +123,6 @@ g:enhanced_diff_default_git
 Default command line arguments for git
 (Default: "--no-index --no-color --no-ext-diff")
 
-g:enhanced_diff_default_diff
-----------------------------
-Default command line arguments for diff
-(Default: "--binary")
-
 g:enhanced_diff_default_args
 ----------------------------
 Default arguments for any diff command

@@ -18,11 +18,13 @@ function! s:DiffInit(...) "{{{2
   let special_args = {'icase': '-i', 'iwhite': '-b'}
   let git_default = get(g:, 'enhanced_diff_default_git',
     \ '--no-index --no-color --no-ext-diff')
-  let diff_default = get(g:, 'enhanced_diff_default_diff', '--binary')
   let default_args = (exists("a:2") ? a:2 : ''). ' '.
     \ get(g:, 'enhanced_diff_default_args', '-U0') 
-  " need to get first word of the diff command
   let diff_cmd = split(s:diffcmd)[0]
+  if exists("g:enhanced_diff_default_{diff_cmd}")
+    let {diff_cmd}_default = g:enhanced_diff_default_{diff_cmd}
+  endif
+  " need to get first word of the diff command
 
   if !executable(diff_cmd)
     throw "no executable"
