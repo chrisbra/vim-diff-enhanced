@@ -213,6 +213,8 @@ third line of this document.
 - rename public commands to :EnhancedDiff prefix (issue
   https://github.com/chrisbra/vim-diff-enhanced/isseus/4 reported by justinmk,
   thanks!)
+- g:enhanced_diff_default_git variable wasn't honored (issue #7, reported by
+  talha131, thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
 - update diff, when in diffmode and |:CustomDiff| is used
