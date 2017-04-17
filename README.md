@@ -1,4 +1,4 @@
-#EnhancedDiff plugin
+# EnhancedDiff plugin
 > A Vim plugin for creating better diffs (sometimes)
 
 This plugin allows you to make use of the Patience diff algorithm for
@@ -22,7 +22,7 @@ If Vim is in diff mode, the diff will be updated to this:
 Note, that the Patience algorithm might not always provide better diffs. But
 using this plugin you can at least easily switch between different diffs.
 
-#Ignoring parts of a afile
+# Ignoring parts of a afile
 
 Using the command `:EnhancedDiffIgnorePat pat` you can define patterns, that
 will be ignored before feeding the buffer contents to the diff program.
@@ -32,7 +32,7 @@ so that the content will look like the same for the diff binary.
 This is how it looks like with a pattern of `^[^;]\+;` and `;[^;]\+$`
 ![diff_ignore](diff_ignore.png)
 
-###Installation
+### Installation
 Use the plugin manager of your choice:
 
 * [Pathogen][pathogen]
@@ -49,11 +49,11 @@ Alternatively download the [stable][] version of the plugin, edit it with Vim (`
 
 [stable]: http://www.vim.org/scripts/script.php?script_id=5121
 
-###Usage
+### Usage
 Once installed, take a look at the help at `:h EnhancedDiff`
 
 Here is a short overview of the functionality provided by the plugin:
-####Ex commands:
+#### Ex commands:
 `:PatienceDiff` - Use the Patience Diff algorithm for the next diff mode
 
 `:EnhancedDiff <algorithm>`  - Use &lt;algorithm> to generate the diff.
@@ -69,9 +69,9 @@ diffs. Make sure you have at least git version 1.8.2 installed.
 
 `:EnhancedDiffDisable`    - Disable plugin (and use default Vim diff capabilities).
 
-###FAQ
+### FAQ
 
-####How can I enable the patience diff algorithm when starting as vimdiff / git difftool / ... ?
+#### How can I enable the patience diff algorithm when starting as vimdiff / git difftool / ... ?
 In that case, add this snippet to your .vimrc:
 ```viml
 " started In Diff-Mode set diffexpr (plugin not loaded yet)
@@ -79,7 +79,7 @@ if &diff
     let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
 endif
 ```
-###License & Copyright
+### License & Copyright
 
 © 2015 by Christian Brabandt. The Vim License applies. See `:h license`
 
