@@ -1,4 +1,4 @@
-##This directory is used for testing the generated normal diffs##
+## This directory is used for testing the generated normal diffs ##
 
 TEST the generation of the correct diff.
 
