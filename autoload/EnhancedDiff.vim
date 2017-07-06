@@ -150,6 +150,9 @@ function! EnhancedDiff#Diff(...) "{{{2
     return
   endtry
   call s:ModifyDiffFiles()
+  if get(g:, 'enhanced_diff_debug', 0)
+    sil echomsg "Executing diff command: ". s:diffcmd . ' '. join(s:diffargs, ' ')
+  endif
   let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
   call s:ModifyPathAndCD('-')
   if v:shell_error < 0 || v:shell_error > 1
@@ -178,6 +181,7 @@ function! EnhancedDiff#Diff(...) "{{{2
       let opt .=  "-b "
     endif
     silent execute "!diff " . opt . v:fname_in . " " . v:fname_new .  " > EnhancedDiff_default.txt"
+    redraw!
   endif
 endfunction
 " vim: ts=2 sts=-1 sw=0 et fdm=marker com+=l\:\"
