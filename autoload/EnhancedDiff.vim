@@ -137,6 +137,12 @@ function! EnhancedDiff#ConvertToNormalDiff(list) "{{{2
   endfor
   return result
 endfunction
+function! s:SysList(cmd)
+  if exists('*systemlist')
+    return systemlist(a:cmd)
+  endif
+  return split(system(a:cmd), '\n')
+endfunction
 function! EnhancedDiff#Diff(...) "{{{2
   let cmd=(exists("a:1") ? a:1 : '')
   let arg=(exists("a:2") ? a:2 : '')
@@ -153,7 +159,7 @@ function! EnhancedDiff#Diff(...) "{{{2
   if get(g:, 'enhanced_diff_debug', 0)
     sil echomsg "Executing diff command: ". s:diffcmd . ' '. join(s:diffargs, ' ')
   endif
-  let difflist=systemlist(s:diffcmd. ' '. join(s:diffargs, ' '))
+  let difflist=s:SysList(s:diffcmd . ' ' . join(s:diffargs, ' '))
   call s:ModifyPathAndCD('-')
   if v:shell_error < 0 || v:shell_error > 1
     " An error occured
