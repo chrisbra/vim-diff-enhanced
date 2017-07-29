@@ -39,7 +39,7 @@ com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffex
 com! PatienceDiff :EnhancedDiff patience
 com! EnhancedDiffDisable  :set diffexpr=
 "com! -nargs=1 -bang EnhancedDiffIgnorePat if <q-bang> | :let g:enhanced_diff_ignore_pat = [<q-args>] | else | :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>] |endif
-com! -nargs=* -bang EnhancedDiffIgnorePat call s:CustomIgnorePat(<q-bang>, <f-args>)
+com! -nargs=* -bang EnhancedDiffIgnorePat call s:CustomIgnorePat(<bang>0, <f-args>)
 
 " Restore: "{{{1
 let &cpo=s:cpo
