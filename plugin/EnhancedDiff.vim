@@ -25,13 +25,24 @@ function! s:CustomDiffAlgComplete(A,L,P) "{{{2
     return "myers\nminimal\ndefault\npatience\nhistogram"
 endfu
 function! s:CustomIgnorePat(bang, ...) "{{{2
-    if a:bang || !exists("g:enhanced_diff_ignore_pat")
+    if a:bang || (!exists("g:enhanced_diff_ignore_pat") && !exists("b:enhanced_diff_ignore_pat"))
         let g:enhanced_diff_ignore_pat=[]
     endif
     if a:0
-        let pat = a:1
-        let replace = a:0 == 2 ? a:2 : 'XXX'
-        call add(g:enhanced_diff_ignore_pat, [pat, replace])
+        let local = 0
+        let replace == 'XXX'
+        if len(a:0) == 3 && a:1 == '-buffer'
+            let local=1
+        endif
+        let pat = local ? a:2 : a:1
+        if a:0 == 2
+            let replace = local ? a:3 : a:2
+        endif
+        if local
+            call add(b:enhanced_diff_ignore_pat, [pat, replace])
+        else
+            call add(g:enhanced_diff_ignore_pat, [pat, replace])
+        endif
     endif
 endfu
 " public interface {{{1

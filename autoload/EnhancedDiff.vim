@@ -47,7 +47,7 @@ function! s:DiffInit(...) "{{{2
 endfu
 function! s:ModifyDiffFiles() "{{{2
   " replace provided pattern by 'XXX' so it will be ignored when diffing
-  for expr in get(g:, 'enhanced_diff_ignore_pat', [])
+  for expr in get(g:, 'enhanced_diff_ignore_pat', []) + get(b:, 'enhanced_diff_ignore_pat', [])
     if !exists("cnt1")
       let cnt1 = readfile(v:fname_in)
       let cnt2 = readfile(v:fname_new)

@@ -71,7 +71,7 @@ Use the :EnhancedDiffDisable command to disable this plugin.
 
 Use the command :EnhancedDiffIgnorePat to add patterns to the ignore list: >
 
-   :EnhancedDiffIgnorePat \%.*<10c [<replace>]
+   :EnhancedDiffIgnorePat [-buffer] \%.*<10c [<replace>]
 <
 This will add the pattern "\%.*<10c" (all text before column 10) to the
 ignorelist. Internally this works by replacing the pattern by a common string
@@ -80,6 +80,9 @@ with multi-line patterns.
 
 Use the "!" attribute to remove all existing patterns and set it to the given
 pattern only.
+
+If [-buffer] is given, will use buffer-local variable for the ignore pattern.
+In that case, the <replace> part must be given!
 
 If <replace> is given, will use that as replacement part for the pattern
 
@@ -210,6 +213,8 @@ third line of this document.
   thanks!)
 - g:enhanced_diff_default_git variable wasn't honored (issue #7, reported by
   talha131, thanks!)
+- Make |:EnhancedDiffIgnorePat| use buffer-local ignore pattern, if possible
+  (issue #22, reported by liushapku, thanks!)
 
 0.3: Mar 5th, 2014 "{{{1
 - update diff, when in diffmode and |:CustomDiff| is used
