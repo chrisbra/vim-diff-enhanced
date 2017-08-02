@@ -30,7 +30,7 @@ function! s:CustomIgnorePat(bang, ...) "{{{2
     endif
     if a:0
         let local = 0
-        let replace == 'XXX'
+        let replace = 'XXX'
         if len(a:0) == 3 && a:1 == '-buffer'
             let local=1
         endif
