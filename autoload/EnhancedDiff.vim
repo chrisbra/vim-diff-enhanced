@@ -36,6 +36,11 @@ function! s:DiffInit(...) "{{{2
 
   for [i,j] in items(special_args)
     if match(diffopt, '\m\C'.i) > -1
+      if diff_cmd is# 'git' && i is# 'icase'
+        " git diff does not support -i option!
+        call s:Warn("git does not support -i/icase option")
+        continue
+      endif
       call add(s:diffargs, j)
     endif
   endfor
