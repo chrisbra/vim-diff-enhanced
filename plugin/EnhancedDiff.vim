@@ -36,14 +36,25 @@ function! s:CustomDiffAlgComplete(A,L,P) "{{{2
     endif
 endfu
 function! s:CustomIgnorePat(bang, ...) "{{{2
-    if a:bang || (!exists("g:enhanced_diff_ignore_pat") && !exists("b:enhanced_diff_ignore_pat"))
+    if a:bang
+        if a:bang && a:0  && a:1 == '-buffer'
+            let b:enhanced_diff_ignore_pat=[]
+        else
+            let g:enhanced_diff_ignore_pat=[]
+        endif
+    endif
+    if !exists("g:enhanced_diff_ignore_pat")
         let g:enhanced_diff_ignore_pat=[]
     endif
+
     if a:0
         let local = 0
         let replace = 'XXX'
         if a:0 == 3 && a:1 == '-buffer'
-            let local=1
+            let local=1 
+            if !exists("b:enhanced_diff_ignore_pat"))
+                let b:enhanced_diff_ignore_pat=[]
+            endif
         endif
         let pat = local ? a:2 : a:1
         if a:0 == 2
