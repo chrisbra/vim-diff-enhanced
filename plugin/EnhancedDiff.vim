@@ -21,15 +21,18 @@ set cpo&vim
 let g:loaded_enhanced_diff = 1
 
 " Functions {{{1
-function! s:CheckGitVersion() "{{{2
-    silent let git_version = matchlist(system("git --version"),'\vgit version (\d+)\.(\d+)\.(\d+)')
-    let major = git_version[1]
-    let middle = git_version[2]
-    let minor = git_version[3]
-    let g:enhanced_diff_old_git = (major < 1) || (major == 1 && (middle < 8 || (middle == 8 && minor < 2)))
+function! s:OldGitVersion() "{{{2
+    if !exists('g:enhanced_diff_old_git')
+        silent let git_version = matchlist(system("git --version"),'\vgit version (\d+)\.(\d+)\.(\d+)')
+        let major = git_version[1]
+        let middle = git_version[2]
+        let minor = git_version[3]
+        let g:enhanced_diff_old_git = (major < 1) || (major == 1 && (middle < 8 || (middle == 8 && minor < 2)))
+    endif
+    return g:enhanced_diff_old_git
 endfu
 function! s:CustomDiffAlgComplete(A,L,P) "{{{2
-    if g:enhanced_diff_old_git
+    if s:OldGitVersion()
         return "myers\ndefault\npatience"
     else
         return "myers\nminimal\ndefault\npatience\nhistogram"
@@ -67,13 +70,14 @@ function! s:CustomIgnorePat(bang, ...) "{{{2
         endif
     endif
 endfu
+function s:EnhancedDiffExpr(algo)
+    return printf('EnhancedDiff#Diff("git diff","%s")',
+                \ s:OldGitVersion()
+                \ ? (a:algo == "patience" ? "--patience":"")
+                \ : "--diff-algorithm=".a:algo)
+endfu
 " public interface {{{1
-call s:CheckGitVersion()
-if g:enhanced_diff_old_git
-    com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "<args>" == "patience" ? "--patience" : "")'|:diffupdate
-else
-    com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=<args>")'|:diffupdate
-endif
+com! -nargs=1 -complete=custom,s:CustomDiffAlgComplete EnhancedDiff :let &diffexpr=s:EnhancedDiffExpr("<args>")|:diffupdate
 com! PatienceDiff :EnhancedDiff patience
 com! EnhancedDiffDisable  :set diffexpr=
 "com! -nargs=1 -bang EnhancedDiffIgnorePat if <q-bang> | :let g:enhanced_diff_ignore_pat = [<q-args>] | else | :let g:enhanced_diff_ignore_pat=get(g:, 'enhanced_diff_ignore_pat', []) + [<q-args>] |endif
