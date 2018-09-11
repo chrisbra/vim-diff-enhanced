@@ -3,7 +3,7 @@
 
 This plugin allows you to make use of the Patience diff algorithm for
 generating diffs to use with Vim. This needs the git command line tool
-available. (But see [Update below][Update]
+available. (But see [Update below][Update])
 
 You can also customize your setup to use any other tool to generated diffs
 (e.g. mercurial) Read the help on how to configure the plugin accordingly.
@@ -106,4 +106,4 @@ __NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK__
 [vundle]: https://github.com/gmarik/vundle
 [vim-plug]: https://github.com/junegunn/vim-plug
 [Vim_81360]: https://github.com/vim/vim/releases/tag/v8.1.0360
-[Update]: https://github.com/chrisbra/vim-diff-enhanced/blob/master/README.md#Update
+[Update]: https://github.com/chrisbra/vim-diff-enhanced/blob/master/README.md#update
