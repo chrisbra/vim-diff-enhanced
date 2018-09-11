@@ -3,7 +3,7 @@
 
 This plugin allows you to make use of the Patience diff algorithm for
 generating diffs to use with Vim. This needs the git command line tool
-available.
+available. (But see [Update below][Update]
 
 You can also customize your setup to use any other tool to generated diffs
 (e.g. mercurial) Read the help on how to configure the plugin accordingly.
@@ -21,6 +21,22 @@ If Vim is in diff mode, the diff will be updated to this:
 
 Note, that the Patience algorithm might not always provide better diffs. But
 using this plugin you can at least easily switch between different diffs.
+
+## Update 
+Starting with Vim [8.1.0360][Vim_81360] Vim now comes bundled with the xdiff
+library and is able to handle diff internally without falling back to
+calling `diff` as external tool.
+
+This means, one can now simply use
+`:set diffopt+=internal,algorithm=patience`
+and be Vim will use the patience diff algorithm when creating a diff.
+
+In addition, Vim can now parse context diffs (currently with only zero
+context ines) from a diff tool when using diff as external tool. So a
+translation to an ed-like diff is not needed anymore.
+
+So in essence, starting with that Vim version, you don't need to use this
+plugin anymore.
 
 # Ignoring parts of a afile
 
@@ -89,3 +105,5 @@ __NO WARRANTY, EXPRESS OR IMPLIED.  USE AT-YOUR-OWN-RISK__
 [neobundle]: https://github.com/Shougo/neobundle.vim
 [vundle]: https://github.com/gmarik/vundle
 [vim-plug]: https://github.com/junegunn/vim-plug
+[Vim_81360]: https://github.com/vim/vim/releases/tag/v8.1.0360
+[Update]: https://github.com/chrisbra/vim-diff-enhanced/blob/master/README.md#Update
