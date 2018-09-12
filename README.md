@@ -28,7 +28,7 @@ library and is able to handle diff internally without falling back to
 calling `diff` as external tool.
 
 This means, one can now simply use
-`:set diffopt+=internal,algorithm=patience`
+`:set diffopt+=internal,algorithm:patience`
 and be Vim will use the patience diff algorithm when creating a diff.
 
 In addition, Vim can now parse context diffs (currently with only zero
