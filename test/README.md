@@ -9,40 +9,43 @@ Run the `test.sh` script to test.
 
 with git-diff-normal-format-stdin (slightly changed from [takaaki Kasai](http://takaaki-kasai-tech.blogspot.de/2014/07/use-smarter-algorithm-for-vimdiff-such-as-patience-or-histogram.html)
 ---------------------------------------
-    #!/usr/bin/env ruby
-    iwhite = ''
-    if (ARGV[0] == '-b')
-    iwhite = ARGV.shift.dup << ' '
-    end
 
-    diffout = ARGF.read
-    diffout.sub!(/\A.*?@@/m, '@@')
-    diffout.gsub!(/^\+/, '> ')
-    diffout.gsub!(/^-/, '< ')
-    diffout.gsub!(/^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@.*/) do
-    before_start = $1
-    before_size = $2
-    after_start = $3
-    after_size = $4
+```ruby
+  #!/usr/bin/env ruby
+  iwhite = ''
+  if (ARGV[0] == '-b')
+  iwhite = ARGV.shift.dup << ' '
+  end
 
-    action = 'c'
-    if (before_size == '0')
-	action = 'a'
-    elsif (after_size == '0')
-	action = 'd'
-    end
+  diffout = ARGF.read
+  diffout.sub!(/\A.*?@@/m, '@@')
+  diffout.gsub!(/^\+/, '> ')
+  diffout.gsub!(/^-/, '< ')
+  diffout.gsub!(/^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@.*/) do
+  before_start = $1
+  before_size = $2
+  after_start = $3
+  after_size = $4
 
-    before_end = ''
-    if (before_size && before_size != '0')
-	before_end = ",#{before_start.to_i + before_size.to_i - 1}"
-    end
+  action = 'c'
+  if (before_size == '0')
+action = 'a'
+  elsif (after_size == '0')
+action = 'd'
+  end
 
-    after_end = ''
-    if (after_size && after_size != '0')
-	after_end = ",#{after_start.to_i + after_size.to_i - 1}"
-    end
+  before_end = ''
+  if (before_size && before_size != '0')
+before_end = ",#{before_start.to_i + before_size.to_i - 1}"
+  end
 
-    "#{before_start}#{before_end}#{action}#{after_start}#{after_end}"
-    end
-    diffout.gsub!(/^(<.*)(\r|\n|\r\n)(>)/, '\1\2---\2\3')
-    print diffout
+  after_end = ''
+  if (after_size && after_size != '0')
+after_end = ",#{after_start.to_i + after_size.to_i - 1}"
+  end
+
+  "#{before_start}#{before_end}#{action}#{after_start}#{after_end}"
+  end
+  diffout.gsub!(/^(<.*)(\r|\n|\r\n)(>)/, '\1\2---\2\3')
+  print diffout
+```
