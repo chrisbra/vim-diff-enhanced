@@ -27,18 +27,22 @@ Starting with Vim [8.1.0360][Vim_81360] Vim now comes bundled with the xdiff
 library and is able to handle diff internally without falling back to
 calling `diff` as external tool.
 
-This means, one can now simply use
-`:set diffopt+=internal,algorithm:patience`
-and be Vim will use the patience diff algorithm when creating a diff.
+This means, one can now simply set diffopt:
+
+    if has("patch-8.1.0360")
+        set diffopt+=internal,algorithm:patience
+    endif
+
+and Vim will use the patience diff algorithm when creating a diff.
 
 In addition, Vim can now parse context diffs (currently with only zero
-context ines) from a diff tool when using diff as external tool. So a
+context lines) from a diff tool when using diff as external tool. So a
 translation to an ed-like diff is not needed anymore.
 
 So in essence, starting with that Vim version, you don't need to use this
 plugin anymore.
 
-# Ignoring parts of a afile
+# Ignoring parts of a file
 
 Using the command `:EnhancedDiffIgnorePat pat` you can define patterns, that
 will be ignored before feeding the buffer contents to the diff program.
