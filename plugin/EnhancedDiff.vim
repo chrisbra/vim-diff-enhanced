@@ -55,7 +55,7 @@ function! s:CustomIgnorePat(bang, ...) "{{{2
         let replace = 'XXX'
         if a:0 == 3 && a:1 == '-buffer'
             let local=1
-            if !exists("b:enhanced_diff_ignore_pat"))
+            if !exists("b:enhanced_diff_ignore_pat")
                 let b:enhanced_diff_ignore_pat=[]
             endif
         endif
